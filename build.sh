@@ -392,6 +392,70 @@ main() {
         print_success "yt-dlp 已就緒"
     fi
     
+    # 檢查並下載FFmpeg
+    if [ ! -f "bin/ffmpeg.exe" ] && [ ! -f "bin/ffmpeg" ]; then
+        print_step "下載 FFmpeg..."
+        
+        local ffmpeg_url="https://github.com/GyanD/codexffmpeg/releases/download/7.1.1/ffmpeg-7.1.1-essentials_build.zip"
+        local ffmpeg_zip="tmp/ffmpeg.zip"
+        local ffmpeg_extract_dir="tmp/ffmpeg_extract"
+        
+        # 創建臨時目錄
+        mkdir -p tmp
+        
+        # 下載FFmpeg
+        if command -v curl >/dev/null 2>&1; then
+            curl -L "$ffmpeg_url" -o "$ffmpeg_zip"
+        elif command -v wget >/dev/null 2>&1; then
+            wget "$ffmpeg_url" -O "$ffmpeg_zip"
+        else
+            print_error "需要 curl 或 wget 來下載 FFmpeg"
+            print_warning "請手動下載 FFmpeg 到 bin/ 目錄"
+            print_info "下載地址: $ffmpeg_url"
+        fi
+        
+        if [ -f "$ffmpeg_zip" ]; then
+            print_step "解壓縮 FFmpeg..."
+            
+            # 檢查解壓工具
+            if command -v unzip >/dev/null 2>&1; then
+                # 創建解壓目錄
+                rm -rf "$ffmpeg_extract_dir"
+                mkdir -p "$ffmpeg_extract_dir"
+                
+                # 解壓縮
+                unzip -q "$ffmpeg_zip" -d "$ffmpeg_extract_dir"
+                
+                # 查找並複製exe文件到bin目錄
+                print_step "複製 FFmpeg 執行文件..."
+                find "$ffmpeg_extract_dir" -name "*.exe" -type f | while read exe_file; do
+                    filename=$(basename "$exe_file")
+                    cp "$exe_file" "bin/$filename"
+                    chmod +x "bin/$filename"
+                    print_info "已複製: $filename"
+                done
+                
+                # 清理臨時文件
+                rm -rf "$ffmpeg_extract_dir"
+                rm -f "$ffmpeg_zip"
+                
+                # 驗證FFmpeg工具
+                if [ -f "bin/ffmpeg.exe" ]; then
+                    print_success "FFmpeg 下載和安裝完成"
+                else
+                    print_warning "FFmpeg exe 文件未找到，請檢查下載的壓縮包"
+                fi
+            else
+                print_error "需要 unzip 命令來解壓縮 FFmpeg"
+                print_warning "請手動解壓縮 $ffmpeg_zip 並將 *.exe 文件複製到 bin/ 目錄"
+            fi
+        else
+            print_warning "FFmpeg 下載失敗，請手動下載到 bin/ 目錄"
+        fi
+    else
+        print_success "FFmpeg 已就緒"
+    fi
+    
     # 顯示構建結果
     echo ""
     echo "========================================="
