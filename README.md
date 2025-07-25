@@ -88,7 +88,7 @@
 
 ```cmd
 # 方法 1: 使用服務管理腳本 (推薦)
-start.bat
+scripts\start.bat
 
 # 方法 2: 直接執行
 bin\server.exe
@@ -98,13 +98,13 @@ bin\server.exe
 
 ```cmd
 # 啟動服務
-start.bat
+scripts\start.bat
 
 # 檢查服務狀態
-status.bat
+scripts\status.bat
 
 # 停止服務
-stop.bat
+scripts\stop.bat
 ```
 
 ### 服務驗證
@@ -119,10 +119,10 @@ stop.bat
 
 ```cmd
 # 使用停止腳本 (推薦)
-stop.bat
+scripts\stop.bat
 
 # 查看停止狀態
-status.bat
+scripts\status.bat
 ```
 
 ### 強制停止
@@ -157,13 +157,13 @@ tasklist | findstr server
 
 ```cmd
 # 檢視服務狀態
-status.bat
+scripts\status.bat
 
 # 檢視運行日誌
 type server.log
 
 # 重啟服務
-stop.bat && start.bat
+scripts\stop.bat && scripts\start.bat
 ```
 
 ### 進階配置

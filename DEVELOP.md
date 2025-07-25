@@ -40,7 +40,7 @@ rustc --version
 ./build.sh
 
 # 4. 啟動服務
-./service.sh start
+scripts/service.sh start
 
 # 5. 訪問服務
 # HTTP: http://127.0.0.1:3000
@@ -67,12 +67,15 @@ yt-mp3-service/
 │   └── key.pem               # 私鑰
 ├── downloads/                # 下載文件存儲
 ├── scripts/                  # 服務管理腳本
+│   ├── service.sh           # 統一服務管理腳本
+│   ├── start.sh/start.bat   # 啟動腳本
+│   ├── stop.sh/stop.bat     # 停止腳本
+│   └── status.sh/status.bat # 狀態檢查腳本
 ├── docs/                     # 文檔目錄
 │   ├── BUILD.md              # 構建說明
 │   ├── SERVICE.md            # 服務管理說明
 │   └── DEVELOP.md            # 開發指南 (本文件)
 ├── build.sh                  # 主構建腳本
-├── service.sh                # 服務管理腳本
 ├── Cargo.toml               # Rust 項目配置
 └── README.md                # 項目說明
 ```
@@ -256,29 +259,29 @@ cargo clean
 
 ### 統一管理接口
 
-使用 `service.sh` 腳本進行完整的服務生命週期管理：
+使用 `scripts/service.sh` 腳本進行完整的服務生命週期管理：
 
 ```bash
 # 查看幫助和狀態
-./service.sh
+scripts/service.sh
 
 # 啟動服務
-./service.sh start
+scripts/service.sh start
 
 # 停止服務
-./service.sh stop
+scripts/service.sh stop
 
 # 重啟服務
-./service.sh restart
+scripts/service.sh restart
 
 # 查看狀態
-./service.sh status
+scripts/service.sh status
 
 # 查看日志
-./service.sh logs
+scripts/service.sh logs
 
 # 實時日志
-./service.sh logs --follow
+scripts/service.sh logs --follow
 ```
 
 ### 服務狀態監控
@@ -291,13 +294,13 @@ cargo clean
 #### 監控命令
 ```bash
 # 基本狀態檢查
-./service.sh status
+scripts/service.sh status
 
 # 詳細狀態信息
-./service.sh status --detailed
+scripts/service.sh status --detailed
 
 # 持續監控
-./service.sh status --watch
+scripts/service.sh status --watch
 ```
 
 ### 日志管理
@@ -312,7 +315,7 @@ cargo clean
 tail -f server.log
 
 # 使用服務腳本
-./service.sh logs --follow
+scripts/service.sh logs --follow
 ```
 
 ## 開發工作流程
@@ -330,7 +333,7 @@ git checkout -b feature/new-feature
 ./build.sh
 
 # 4. 啟動測試
-./service.sh restart
+scripts/service.sh restart
 
 # 5. 功能測試
 # 訪問 http://127.0.0.1:3000
@@ -357,7 +360,7 @@ git merge feature/new-feature
 cargo install cargo-watch
 
 # 自動重新編譯和重啟
-cargo watch -x "build --release" -s "./service.sh restart"
+cargo watch -x "build --release" -s "scripts/service.sh restart"
 ```
 
 ### 3. 調試流程
@@ -374,10 +377,10 @@ RUST_LOG=debug bin/server
 #### 生產調試
 ```bash
 # 查看詳細狀態
-./service.sh status --detailed
+scripts/service.sh status --detailed
 
 # 查看日志
-./service.sh logs --follow
+scripts/service.sh logs --follow
 
 # 檢查進程
 ps aux | grep server
@@ -523,7 +526,7 @@ fn process_download(url: &str, task_id: &str) -> Result<String, Error> {
 ./build.sh
 
 # 2. 啟動服務
-./service.sh start
+scripts/service.sh start
 
 # 3. 驗證部署
 curl http://127.0.0.1:3000/
@@ -546,7 +549,7 @@ User=yt-mp3
 Group=yt-mp3
 WorkingDirectory=/opt/yt-mp3-service
 ExecStart=/opt/yt-mp3-service/bin/server
-ExecStop=/opt/yt-mp3-service/service.sh stop
+ExecStop=/opt/yt-mp3-service/scripts/service.sh stop
 Restart=always
 RestartSec=5
 StandardOutput=append:/var/log/yt-mp3/access.log
@@ -705,7 +708,7 @@ netstat -tulnp | grep -E ":(3000|3443)"
 lsof -i :3000
 
 # 終止進程
-./service.sh stop --force
+scripts/service.sh stop --force
 pkill -f server
 ```
 
@@ -882,7 +885,7 @@ Closes #123
    # 收集相關信息
    rustc --version
    cargo --version
-   ./service.sh status --detailed
+   scripts/service.sh status --detailed
    tail -50 server.log
    ```
 

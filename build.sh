@@ -77,8 +77,8 @@ create_release_package() {
     
     # 複製腳本文件
     print_info "複製管理腳本..."
-    cp *.sh "${release_dir}/scripts/" 2>/dev/null || true
-    cp *.bat "${release_dir}/scripts/" 2>/dev/null || true
+    cp scripts/*.sh "${release_dir}/scripts/" 2>/dev/null || true
+    cp scripts/*.bat "${release_dir}/scripts/" 2>/dev/null || true
     
     # 複製文檔
     print_info "複製文檔..."
@@ -201,10 +201,6 @@ chmod +x "$INSTALL_DIR/scripts/"*.sh
 # 創建符號鏈接到腳本
 print_info "創建管理腳本鏈接..."
 cd "$INSTALL_DIR"
-ln -sf "scripts/service.sh" "service"
-ln -sf "scripts/start.sh" "start"
-ln -sf "scripts/stop.sh" "stop"
-ln -sf "scripts/status.sh" "status"
 
 ln -sf "scripts/start.bat" "start.bat"
 ln -sf "scripts/stop.bat" "stop.bat"
@@ -215,9 +211,9 @@ print_success "安裝完成！"
 echo ""
 print_info "使用方法："
 echo "  cd $INSTALL_DIR"
-echo "  ./service start     # 啟動服務"
-echo "  ./service stop      # 停止服務"
-echo "  ./service status    # 查看狀態"
+echo "  start.bat     # 啟動服務"
+echo "  stop.bat      # 停止服務"
+echo "  status.bat    # 查看狀態"
 echo ""
 print_info "服務地址："
 echo "  🌐 HTTP:  http://127.0.0.1:3000"
@@ -264,9 +260,9 @@ YT-MP3 Service Release Package
    - Windows: install.bat
 
 使用方法:
-1. 啟動服務: ./service start
+1. 啟動服務: start.bat
 2. 訪問: http://127.0.0.1:3000
-3. 停止服務: ./service stop
+3. 停止服務: stop.bat
 
 更多信息請查看 docs/ 目錄中的文檔。
 EOF

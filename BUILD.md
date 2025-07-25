@@ -81,7 +81,11 @@ bin/cert-gen.exe
 
 ### 啟動服務器
 ```bash
+# 直接啟動
 bin/server.exe
+
+# 或使用服務管理腳本
+scripts/start.bat
 ```
 
 ### 訪問服務

@@ -95,11 +95,11 @@ cmd_start() {
         return 0
     fi
     
-    if [ -f "start.sh" ]; then
-        chmod +x start.sh
-        ./start.sh
+    if [ -f "scripts/start.sh" ]; then
+        chmod +x scripts/start.sh
+        scripts/start.sh
     else
-        print_error "找不到啟動腳本 start.sh"
+        print_error "找不到啟動腳本 scripts/start.sh"
         exit 1
     fi
 }
@@ -135,11 +135,11 @@ cmd_stop() {
         return 0
     fi
     
-    if [ -f "stop.sh" ]; then
-        chmod +x stop.sh
-        ./stop.sh "${stop_args[@]}"
+    if [ -f "scripts/stop.sh" ]; then
+        chmod +x scripts/stop.sh
+        scripts/stop.sh "${stop_args[@]}"
     else
-        print_error "找不到停止腳本 stop.sh"
+        print_error "找不到停止腳本 scripts/stop.sh"
         exit 1
     fi
 }
@@ -184,11 +184,11 @@ cmd_status() {
         esac
     done
     
-    if [ -f "status.sh" ]; then
-        chmod +x status.sh
-        ./status.sh "${status_args[@]}"
+    if [ -f "scripts/status.sh" ]; then
+        chmod +x scripts/status.sh
+        scripts/status.sh "${status_args[@]}"
     else
-        print_error "找不到狀態腳本 status.sh"
+        print_error "找不到狀態腳本 scripts/status.sh"
         exit 1
     fi
 }

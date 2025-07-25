@@ -9,86 +9,86 @@ YT-MP3 Service 服務管理腳本使用指南
 #### Bash 版本
 ```bash
 # 查看狀態和幫助
-./service.sh
+scripts/service.sh
 
 # 啟動服務
-./service.sh start
+scripts/service.sh start
 
 # 停止服務
-./service.sh stop
+scripts/service.sh stop
 
 # 重啟服務
-./service.sh restart
+scripts/service.sh restart
 
 # 查看詳細狀態
-./service.sh status --detailed
+scripts/service.sh status --detailed
 
 # 查看日志
-./service.sh logs
+scripts/service.sh logs
 
 # 持續查看日志
-./service.sh logs --follow
+scripts/service.sh logs --follow
 
 # 構建項目
-./service.sh build
+scripts/service.sh build
 
 # 清理臨時文件
-./service.sh clean
+scripts/service.sh clean
 ```
 
 #### Windows 批處理版本
 ```cmd
 # 查看狀態和幫助
-service.bat
+scripts\service.bat
 
 # 啟動服務
-service.bat start
+scripts\service.bat start
 
 # 停止服務
-service.bat stop
+scripts\service.bat stop
 
 # 重啟服務
-service.bat restart
+scripts\service.bat restart
 
 # 查看狀態
-service.bat status
+scripts\service.bat status
 
 # 查看日志
-service.bat logs
+scripts\service.bat logs
 
 # 構建項目
-service.bat build
+scripts\service.bat build
 ```
 
 ### 2. 單獨功能腳本
 
 #### 啟動服務
 ```bash
-./start.sh
+scripts/start.sh
 ```
 
 #### 停止服務
 ```bash
 # 基本停止
-./stop.sh
+scripts/stop.sh
 
 # 強制停止
-./stop.sh --force
+scripts/stop.sh --force
 
 # 停止並清理
-./stop.sh --clean
+scripts/stop.sh --clean
 ```
 
 #### 狀態檢查
 ```bash
 # 基本狀態
-./status.sh
+scripts/status.sh
 
 # 詳細狀態
-./status.sh --detailed
+scripts/status.sh --detailed
 
 # 監控模式
-./status.sh --watch
+scripts/status.sh --watch
 ```
 
 ## 服務狀態說明
@@ -114,7 +114,7 @@ service.bat build
 ## 日志文件
 
 - **位置**: `server.log`
-- **查看**: `tail -f server.log` 或 `./service.sh logs --follow`
+- **查看**: `tail -f server.log` 或 `scripts/service.sh logs --follow`
 
 ## 進程管理
 
@@ -140,16 +140,16 @@ netstat -tulnp | grep :3000
 lsof -i :3000
 
 # 終止佔用進程
-./service.sh stop --force
+scripts/service.sh stop --force
 ```
 
 ### 2. 服務啟動失敗
 ```bash
 # 查看詳細狀態
-./service.sh status --detailed
+scripts/service.sh status --detailed
 
 # 查看日志
-./service.sh logs
+scripts/service.sh logs
 
 # 檢查必要文件
 ls -la bin/
@@ -163,8 +163,8 @@ rm certs/*
 bin/cert-gen.exe
 
 # 或使用服務腳本
-./service.sh clean
-./service.sh build
+scripts/service.sh clean
+scripts/service.sh build
 ```
 
 ### 4. 權限問題 (Linux/Mac)
@@ -188,23 +188,23 @@ crontab -e
 # 定期清理日志
 if [ -f server.log ] && [ $(stat -f%z server.log) -gt 10485760 ]; then
     mv server.log server.log.old
-    ./service.sh restart
+    scripts/service.sh restart
 fi
 ```
 
 ### 3. 監控服務
 ```bash
 # 監控模式
-./service.sh status --watch
+scripts/service.sh status --watch
 ```
 
 ### 4. 自動重啟
 ```bash
 # 檢查並自動重啟腳本
 #!/bin/bash
-if ! ./service.sh status > /dev/null; then
+if ! scripts/service.sh status > /dev/null; then
     echo "$(date): Service down, restarting..."
-    ./service.sh start
+    scripts/service.sh start
 fi
 ```
 
@@ -213,13 +213,13 @@ fi
 ### 開發時的服務管理
 ```bash
 # 開發時快速重啟
-./service.sh restart
+scripts/service.sh restart
 
 # 查看實時日志
-./service.sh logs --follow
+scripts/service.sh logs --follow
 
 # 查看詳細狀態
-./service.sh status --detailed
+scripts/service.sh status --detailed
 ```
 
 ### 調試模式
@@ -281,7 +281,7 @@ ufw allow from 127.0.0.1 to any port 3443
 # 使用有效的SSL證書替換自簽證書
 cp your-cert.pem certs/cert.pem
 cp your-key.pem certs/key.pem
-./service.sh restart
+scripts/service.sh restart
 ```
 
 ### 3. 運行用戶

@@ -1,2 +1,0 @@
-sh stop
-pause

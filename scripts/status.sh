@@ -287,10 +287,10 @@ show_service_overview() {
     echo ""
     print_info "可用操作:"
     if [ "$service_running" = false ]; then
-        echo "  🚀 啟動服務: ./start.sh"
+        echo "  🚀 啟動服務: scripts/start.sh"
     else
-        echo "  🛑 停止服務: ./stop.sh"
-        echo "  🔄 重啟服務: ./stop.sh && ./start.sh"
+        echo "  🛑 停止服務: scripts/stop.sh"
+        echo "  🔄 重啟服務: scripts/stop.sh && scripts/start.sh"
     fi
     echo "  📊 查看日志: tail -f $LOG_FILE"
     echo "  🌐 訪問服務: http://127.0.0.1:3000"

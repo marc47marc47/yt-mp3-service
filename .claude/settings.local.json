@@ -33,7 +33,14 @@
       "Bash(bin/yt-dlp.exe:*)",
       "Bash(./test_json_parsing.exe)",
       "Bash(timeout:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(git push:*)",
+      "Bash(mv:*)",
+      "Bash(scripts/start.bat)",
+      "Bash(scripts/status.sh:*)",
+      "Bash(scripts/service.sh status:*)",
+      "Bash(scripts/start.sh:*)",
+      "Bash(scripts/stop.sh:*)"
     ],
     "deny": []
   }
