@@ -5,4 +5,5 @@
 /tmp
 /log
 /bin
+*.swp
 ffmpeg-2025-07-23-git-829680f96a-essentials_build.7z
