@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(taskkill:*)",
+      "Bash(pkill:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(mkdir:*)",
+      "Bash(openssl req:*)",
+      "Bash(rm:*)",
+      "Bash(OPENSSL_CONF=/mingw64/ssl/openssl.cnf openssl req -x509 -newkey rsa:2048 -keyout certs/key.pem -out certs/cert.pem -days 365 -nodes -subj \"/C=TW/ST=Taiwan/L=Taipei/O=YT-MP3-Service/CN=localhost\")",
+      "Bash(find:*)",
+      "Bash(OPENSSL_CONF=/mingw64/etc/ssl/openssl.cnf openssl req -x509 -newkey rsa:2048 -keyout certs/key.pem -out certs/cert.pem -days 365 -nodes -subj \"/C=TW/ST=Taiwan/L=Taipei/O=YT-MP3-Service/CN=localhost\")",
+      "Bash(OPENSSL_CONF=/mingw64/etc/ssl/openssl.cnf openssl req -new -key key.pem -out cert.csr -subj \"/C=TW/ST=Taiwan/L=Taipei/O=YT-MP3-Service/CN=localhost\")",
+      "Bash(OPENSSL_CONF=/mingw64/etc/ssl/openssl.cnf openssl x509 -req -in key.pem -signkey key.pem -out cert.pem -days 365)",
+      "Bash(cp:*)",
+      "Bash(bin/cert-gen.exe:*)",
+      "Bash(chmod:*)",
+      "Bash(./build.sh)",
+      "Bash(bin/server.exe:*)",
+      "Bash(./service.sh:*)",
+      "Bash(./build.sh:*)",
+      "Bash(cat:*)",
+      "Bash(tar:*)",
+      "Bash(./bin/server.exe:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(rustc:*)",
+      "Bash(./test_filename.exe)",
+      "Bash(bin/yt-dlp.exe:*)",
+      "Bash(./test_json_parsing.exe)",
+      "Bash(timeout:*)",
+      "Bash(powershell:*)"
+    ],
+    "deny": []
+  }
+}
