@@ -225,10 +225,10 @@ scripts/service.sh status --detailed
 ### 調試模式
 ```bash
 # 前台運行 (不使用腳本)
-bin/server.exe
+bin/yt-mp3.exe
 
 # 查看詳細日志
-RUST_LOG=debug bin/server.exe
+RUST_LOG=debug bin/yt-mp3.exe
 ```
 
 ## 生產環境

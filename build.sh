@@ -56,7 +56,7 @@ create_release_package() {
     
     # 複製可執行文件
     print_info "複製可執行文件..."
-    cp bin/server.exe "${release_dir}/bin/" 2>/dev/null || cp bin/server "${release_dir}/bin/"
+    cp bin/yt-mp3.exe "${release_dir}/bin/" 2>/dev/null || cp bin/yt-mp3 "${release_dir}/bin/"
     cp bin/cert-gen.exe "${release_dir}/bin/" 2>/dev/null || cp bin/cert-gen "${release_dir}/bin/"
     
     # 複製依賴工具（如果存在）
@@ -355,7 +355,7 @@ main() {
     
     # 編譯主服務器
     print_step "編譯主服務器..."
-    cargo build --bin server --release
+    cargo build --bin yt-mp3 --release
     if [ $? -eq 0 ]; then
         print_success "主服務器編譯完成"
     else
@@ -365,8 +365,8 @@ main() {
     
     # 複製服務器到bin目錄
     print_step "部署服務器..."
-    cp target/release/server.exe bin/ 2>/dev/null || cp target/release/server bin/
-    print_success "服務器已部署到 bin/server"
+    cp target/release/yt-mp3.exe bin/ 2>/dev/null || cp target/release/yt-mp3 bin/
+    print_success "服務器已部署到 bin/yt-mp3"
     
     # 檢查並下載yt-dlp
     if [ ! -f "bin/yt-dlp.exe" ] && [ ! -f "bin/yt-dlp" ]; then
@@ -477,7 +477,7 @@ main() {
         echo ""
         echo "📋 使用說明："
         echo "  🔧 重新生成證書: bin/cert-gen"
-        echo "  🚀 啟動服務器:   bin/server"
+        echo "  🚀 啟動服務器:   bin/yt-mp3"
         echo "  🌐 HTTP:         http://127.0.0.1:3000"
         echo "  🔒 HTTPS:        https://127.0.0.1:3443"
         echo ""

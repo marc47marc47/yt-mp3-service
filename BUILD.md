@@ -57,7 +57,7 @@ build.bat
 
 6. **🚀 編譯服務器**
    - 編譯主服務器 (`server`)
-   - 部署到 `bin/server.exe`
+   - 部署到 `bin/yt-mp3.exe`
 
 7. **✅ 驗證部署**
    - 檢查所有文件是否正確部署
@@ -68,7 +68,7 @@ build.bat
 構建完成後，`bin/` 目錄包含：
 
 - `cert-gen.exe` - SSL證書生成工具
-- `server.exe` - 主服務器程序
+- `yt-mp3.exe` - 主服務器程序
 - `yt-dlp.exe` - YouTube下載工具（需手動放置）
 - `ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe` - 音頻處理工具
 
@@ -82,7 +82,7 @@ bin/cert-gen.exe
 ### 啟動服務器
 ```bash
 # 直接啟動
-bin/server.exe
+bin/yt-mp3.exe
 
 # 或使用服務管理腳本
 scripts/start.bat
@@ -121,7 +121,7 @@ bin/cert-gen.exe
 pkill -f server
 
 # Windows
-taskkill /F /IM server.exe
+taskkill /F /IM yt-mp3.exe
 ```
 
 ## 開發模式

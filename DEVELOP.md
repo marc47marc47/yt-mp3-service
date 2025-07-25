@@ -569,7 +569,7 @@ sudo systemctl status yt-mp3
 ##### Windows Service
 ```bash
 # 使用 NSSM 註冊 Windows 服務
-nssm install "YT-MP3 Service" "C:\path\to\yt-mp3-service\bin\server.exe"
+nssm install "YT-MP3 Service" "C:\path\to\yt-mp3-service\bin\yt-mp3.exe"
 nssm set "YT-MP3 Service" AppDirectory "C:\path\to\yt-mp3-service"
 nssm start "YT-MP3 Service"
 ```

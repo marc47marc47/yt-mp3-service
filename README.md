@@ -66,7 +66,7 @@
    ```cmd
    # 檢查生成的檔案
    dir bin\
-   # 應該看到: server.exe, cert-gen.exe
+   # 應該看到: yt-mp3.exe, cert-gen.exe
    ```
 
 ### 方法 2: 預編譯版本
@@ -96,7 +96,7 @@
 scripts\start.bat
 
 # 方法 2: 直接執行
-bin\server.exe
+bin\yt-mp3.exe
 ```
 
 ### 完整服務管理
@@ -134,7 +134,7 @@ scripts\status.bat
 
 ```cmd
 # 如果正常停止失敗，使用強制停止
-taskkill /F /IM server.exe
+taskkill /F /IM yt-mp3.exe
 
 # 清理殘留進程
 tasklist | findstr server

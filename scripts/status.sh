@@ -218,8 +218,8 @@ check_files() {
     print_step "檢查必要文件..."
     
     local files=(
-        "bin/server.exe:服務器可執行文件"
-        "bin/server:服務器可執行文件"
+        "bin/yt-mp3.exe:服務器可執行文件"
+        "bin/yt-mp3:服務器可執行文件"
         "bin/cert-gen.exe:證書生成工具"
         "bin/cert-gen:證書生成工具"
         "certs/cert.pem:SSL證書"

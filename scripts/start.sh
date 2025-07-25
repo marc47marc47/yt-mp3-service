@@ -21,9 +21,9 @@ print_error() { echo -e "${RED}❌ $1${NC}"; }
 print_step() { echo -e "${PURPLE}🚀 $1${NC}"; }
 
 # 服務相關變量
-SERVER_BINARY="bin/server.exe"
+SERVER_BINARY="bin/yt-mp3.exe"
 if [ ! -f "$SERVER_BINARY" ]; then
-    SERVER_BINARY="bin/server"
+    SERVER_BINARY="bin/yt-mp3"
 fi
 PID_FILE="server.pid"
 LOG_FILE="server.log"

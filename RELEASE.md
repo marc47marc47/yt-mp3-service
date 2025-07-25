@@ -24,7 +24,7 @@ YT-MP3 Service Release 打包和分發指南
 ```
 yt-mp3-service_YYYYMMDD_HHMMSS/
 ├── bin/                    # 可執行文件
-│   ├── server.exe         # 主服務器程序
+│   ├── yt-mp3.exe         # 主服務器程序
 │   ├── cert-gen.exe       # SSL證書生成工具
 │   ├── yt-dlp.exe         # YouTube下載工具
 │   ├── ffmpeg.exe         # 音頻處理工具
@@ -165,7 +165,7 @@ ls -la bin/
 chmod +x bin/*
 
 # 檢查依賴
-./bin/server.exe --help
+./bin/yt-mp3.exe --help
 ```
 
 ### 運行問題

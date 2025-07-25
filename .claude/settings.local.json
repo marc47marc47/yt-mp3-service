@@ -40,7 +40,8 @@
       "Bash(scripts/status.sh:*)",
       "Bash(scripts/service.sh status:*)",
       "Bash(scripts/start.sh:*)",
-      "Bash(scripts/stop.sh:*)"
+      "Bash(scripts/stop.sh:*)",
+      "Bash(bin/yt-mp3.exe:*)"
     ],
     "deny": []
   }

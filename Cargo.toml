@@ -18,7 +18,7 @@ rcgen = "0.11"
 time = "0.3"
 
 [[bin]]
-name = "server"
+name = "yt-mp3"
 path = "src/main.rs"
 
 [[bin]]
