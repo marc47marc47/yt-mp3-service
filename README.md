@@ -52,6 +52,9 @@
 
 3. **構建專案**
    ```cmd
+   # 建構需要git 及bash shell, 請先安裝windows git, 並將其加入path
+   # 下載git 安裝程式: https://github.com/git-for-windows/git/releases/download/v2.50.1.windows.1/Git-2.50.1-64-bit.exe
+
    # 使用構建腳本 (推薦)
    build.bat
    
