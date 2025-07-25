@@ -1,206 +1,206 @@
-# 服務管理說明
+# Service Management Instructions
 
-YT-MP3 Service 服務管理腳本使用指南
+YT-MP3 Service management script usage guide
 
-## 可用的服務管理腳本
+## Available Service Management Scripts
 
-### 1. 統一管理腳本 (推薦)
+### 1. Unified Management Script (Recommended)
 
-#### Bash 版本
+#### Bash Version
 ```bash
-# 查看狀態和幫助
+# View status and help
 scripts/service.sh
 
-# 啟動服務
+# Start service
 scripts/service.sh start
 
-# 停止服務
+# Stop service
 scripts/service.sh stop
 
-# 重啟服務
+# Restart service
 scripts/service.sh restart
 
-# 查看詳細狀態
+# View detailed status
 scripts/service.sh status --detailed
 
-# 查看日志
+# View logs
 scripts/service.sh logs
 
-# 持續查看日志
+# Follow logs continuously
 scripts/service.sh logs --follow
 
-# 構建項目
+# Build project
 scripts/service.sh build
 
-# 清理臨時文件
+# Clean temporary files
 scripts/service.sh clean
 ```
 
-#### Windows 批處理版本
+#### Windows Batch Version
 ```cmd
-# 查看狀態和幫助
+# View status and help
 scripts\service.bat
 
-# 啟動服務
+# Start service
 scripts\service.bat start
 
-# 停止服務
+# Stop service
 scripts\service.bat stop
 
-# 重啟服務
+# Restart service
 scripts\service.bat restart
 
-# 查看狀態
+# View status
 scripts\service.bat status
 
-# 查看日志
+# View logs
 scripts\service.bat logs
 
-# 構建項目
+# Build project
 scripts\service.bat build
 ```
 
-### 2. 單獨功能腳本
+### 2. Individual Function Scripts
 
-#### 啟動服務
+#### Start Service
 ```bash
 scripts/start.sh
 ```
 
-#### 停止服務
+#### Stop Service
 ```bash
-# 基本停止
+# Basic stop
 scripts/stop.sh
 
-# 強制停止
+# Force stop
 scripts/stop.sh --force
 
-# 停止並清理
+# Stop and clean
 scripts/stop.sh --clean
 ```
 
-#### 狀態檢查
+#### Status Check
 ```bash
-# 基本狀態
+# Basic status
 scripts/status.sh
 
-# 詳細狀態
+# Detailed status
 scripts/status.sh --detailed
 
-# 監控模式
+# Monitor mode
 scripts/status.sh --watch
 ```
 
-## 服務狀態說明
+## Service Status Description
 
-### 🟢 服務運行正常
-- 進程正在運行
-- 端口正常監聽
-- HTTP/HTTPS 響應正常
+### 🟢 Service Running Normal
+- Process is running
+- Port listening normally
+- HTTP/HTTPS responding normally
 
-### 🟡 服務運行但異常
-- 進程運行但端口異常
-- 端口正常但響應異常
+### 🟡 Service Running but Abnormal
+- Process running but port abnormal
+- Port normal but response abnormal
 
-### 🔴 服務未運行
-- 進程未運行
-- 端口未監聽
+### 🔴 Service Not Running
+- Process not running
+- Port not listening
 
-## 服務端口
+## Service Ports
 
 - **HTTP**: `http://127.0.0.1:3000`
 - **HTTPS**: `https://127.0.0.1:3443`
 
-## 日志文件
+## Log Files
 
-- **位置**: `server.log`
-- **查看**: `tail -f server.log` 或 `scripts/service.sh logs --follow`
+- **Location**: `server.log`
+- **View**: `tail -f server.log` or `scripts/service.sh logs --follow`
 
-## 進程管理
+## Process Management
 
-### PID 文件
-- **位置**: `server.pid`
-- **包含**: 服務器進程ID
+### PID File
+- **Location**: `server.pid`
+- **Contains**: Server process ID
 
-### 進程查看
+### Process Viewing
 ```bash
-# 查看服務進程
+# View service process
 ps aux | grep server
 
-# 查看端口佔用
+# View port occupation
 netstat -tulnp | grep -E ":(3000|3443)"
 ```
 
-## 常見問題排除
+## Common Issue Troubleshooting
 
-### 1. 端口被佔用
+### 1. Port Occupied
 ```bash
-# 查找佔用進程
+# Find occupying process
 netstat -tulnp | grep :3000
 lsof -i :3000
 
-# 終止佔用進程
+# Terminate occupying process
 scripts/service.sh stop --force
 ```
 
-### 2. 服務啟動失敗
+### 2. Service Startup Failed
 ```bash
-# 查看詳細狀態
+# View detailed status
 scripts/service.sh status --detailed
 
-# 查看日志
+# View logs
 scripts/service.sh logs
 
-# 檢查必要文件
+# Check necessary files
 ls -la bin/
 ls -la certs/
 ```
 
-### 3. 證書問題
+### 3. Certificate Issues
 ```bash
-# 重新生成證書
+# Regenerate certificate
 rm certs/*
 bin/cert-gen.exe
 
-# 或使用服務腳本
+# Or use service script
 scripts/service.sh clean
 scripts/service.sh build
 ```
 
-### 4. 權限問題 (Linux/Mac)
+### 4. Permission Issues (Linux/Mac)
 ```bash
-# 賦予執行權限
+# Grant execute permissions
 chmod +x *.sh
 chmod +x bin/*
 ```
 
-## 服務管理最佳實踐
+## Service Management Best Practices
 
-### 1. 定期檢查服務狀態
+### 1. Regular Service Status Check
 ```bash
-# 設置定時任務檢查服務
+# Set cron job to check service
 crontab -e
-# 添加: */5 * * * * /path/to/service.sh status > /dev/null || /path/to/service.sh start
+# Add: */5 * * * * /path/to/service.sh status > /dev/null || /path/to/service.sh start
 ```
 
-### 2. 日志輪轉
+### 2. Log Rotation
 ```bash
-# 定期清理日志
+# Clean logs regularly
 if [ -f server.log ] && [ $(stat -f%z server.log) -gt 10485760 ]; then
     mv server.log server.log.old
     scripts/service.sh restart
 fi
 ```
 
-### 3. 監控服務
+### 3. Monitor Service
 ```bash
-# 監控模式
+# Monitor mode
 scripts/service.sh status --watch
 ```
 
-### 4. 自動重啟
+### 4. Auto Restart
 ```bash
-# 檢查並自動重啟腳本
+# Check and auto restart script
 #!/bin/bash
 if ! scripts/service.sh status > /dev/null; then
     echo "$(date): Service down, restarting..."
@@ -208,32 +208,32 @@ if ! scripts/service.sh status > /dev/null; then
 fi
 ```
 
-## 開發模式
+## Development Mode
 
-### 開發時的服務管理
+### Service Management During Development
 ```bash
-# 開發時快速重啟
+# Quick restart during development
 scripts/service.sh restart
 
-# 查看實時日志
+# View real-time logs
 scripts/service.sh logs --follow
 
-# 查看詳細狀態
+# View detailed status
 scripts/service.sh status --detailed
 ```
 
-### 調試模式
+### Debug Mode
 ```bash
-# 前台運行 (不使用腳本)
+# Run in foreground (without script)
 bin/yt-mp3.exe
 
-# 查看詳細日志
+# View detailed logs
 RUST_LOG=debug bin/yt-mp3.exe
 ```
 
-## 生產環境
+## Production Environment
 
-### 系統服務 (systemd)
+### System Service (systemd)
 ```ini
 # /etc/systemd/system/yt-mp3.service
 [Unit]
@@ -253,7 +253,7 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-### 反向代理 (nginx)
+### Reverse Proxy (nginx)
 ```nginx
 server {
     listen 80;
@@ -267,26 +267,26 @@ server {
 }
 ```
 
-## 安全考慮
+## Security Considerations
 
-### 1. 防火墻設置
+### 1. Firewall Settings
 ```bash
-# 僅允許本地訪問
+# Allow local access only
 ufw allow from 127.0.0.1 to any port 3000
 ufw allow from 127.0.0.1 to any port 3443
 ```
 
-### 2. SSL證書
+### 2. SSL Certificate
 ```bash
-# 使用有效的SSL證書替換自簽證書
+# Replace self-signed certificate with valid SSL certificate
 cp your-cert.pem certs/cert.pem
 cp your-key.pem certs/key.pem
 scripts/service.sh restart
 ```
 
-### 3. 運行用戶
+### 3. Run User
 ```bash
-# 創建專用用戶
+# Create dedicated user
 sudo useradd -r -s /bin/false yt-mp3
 sudo chown -R yt-mp3:yt-mp3 /path/to/yt-mp3-service
 ```

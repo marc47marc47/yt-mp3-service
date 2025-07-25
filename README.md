@@ -1,258 +1,258 @@
 # YT-MP3 Service
 
-🎵 高效能 YouTube 轉 MP3 轉換服務，使用 Rust 和 Axum 構建
+🎵 High-performance YouTube to MP3 conversion service built with Rust and Axum
 
 ![YT-MP3 Service Interface](yt-mp3-service.png)
 
-## 主要功能
+## Key Features
 
-### 🚀 核心功能
-- **快速轉換**: 使用 yt-dlp 和 FFmpeg 進行高性能 YouTube 轉 MP3 轉換
-- **縮圖支援**: 自動下載並顯示影片縮圖
-- **多格式支援**: 支援 MP3、M4A 等多種音頻格式
-- **批量下載**: 支援播放清單批量轉換
+### 🚀 Core Functionality
+- **Fast Conversion**: High-performance YouTube to MP3 conversion using yt-dlp and FFmpeg
+- **Thumbnail Support**: Automatically download and display video thumbnails
+- **Multi-format Support**: Support for MP3, M4A and other audio formats
+- **Batch Download**: Support for playlist batch conversion
 
-### 🌐 Web 介面
-- **直觀操作**: 簡潔易用的網頁介面
-- **即時進度**: 即時顯示轉換進度和狀態
-- **下載管理**: 完成後直接下載音頻檔案
+### 🌐 Web Interface
+- **Intuitive Operation**: Clean and easy-to-use web interface
+- **Real-time Progress**: Real-time display of conversion progress and status
+- **Download Management**: Direct download of audio files after completion
 
-### 🔒 安全與效能
-- **HTTPS 支援**: 內建 TLS 支援，自動生成 SSL 證書
-- **本地運行**: 完全在本地運行，保護隱私
-- **自包含**: 包含所有依賴，無需額外安裝
+### 🔒 Security & Performance
+- **HTTPS Support**: Built-in TLS support with automatic SSL certificate generation
+- **Local Operation**: Runs completely locally to protect privacy
+- **Self-contained**: Includes all dependencies, no additional installation required
 
-## 安裝方法
+## Installation Methods
 
-### 方法 1: 從原始碼構建 (推薦)
+### Method 1: Build from Source (Recommended)
 
-#### 環境需求
-- **Windows 10/11** (64位元)
-- **Rust 工具鏈** (最新穩定版)
-- **網路連線** (用於下載依賴工具)
+#### Environment Requirements
+- **Windows 10/11** (64-bit)
+- **Rust Toolchain** (latest stable version)
+- **Internet Connection** (for downloading dependency tools)
 
-#### 安裝步驟
+#### Installation Steps
 
-1. **安裝 Rust**
+1. **Install Rust**
    ```cmd
-   # 下載並執行 Rust 安裝程式
-   # 訪問 https://rustup.rs/ 下載 rustup-init.exe
+   # Download and run Rust installer
+   # Visit https://rustup.rs/ to download rustup-init.exe
    rustup-init.exe
    
-   # 重新開啟 Command Prompt 驗證安裝
+   # Reopen Command Prompt to verify installation
    cargo --version
    rustc --version
    ```
 
-2. **下載專案**
+2. **Download Project**
    ```cmd
    git clone <repository-url>
    cd yt-mp3-service
    ```
 
-3. **構建專案**
+3. **Build Project**
    ```cmd
-   # 建構需要git 及bash shell, 請先安裝windows git, 並將其加入path
-   # 下載git 安裝程式: https://github.com/git-for-windows/git/releases/download/v2.50.1.windows.1/Git-2.50.1-64-bit.exe
+   # Build requires git and bash shell, please install Windows Git first and add it to PATH
+   # Download Git installer: https://github.com/git-for-windows/git/releases/download/v2.50.1.windows.1/Git-2.50.1-64-bit.exe
 
-   # 使用構建腳本 (推薦)
+   # Use build script (recommended)
    build.bat
    
-   # 或者手動構建
+   # Or manual build
    cargo build --release
    ```
 
-4. **驗證安裝**
+4. **Verify Installation**
    ```cmd
-   # 檢查生成的檔案
+   # Check generated files
    dir bin\
-   # 應該看到: yt-mp3.exe, cert-gen.exe
+   # Should see: yt-mp3.exe, cert-gen.exe
    ```
 
-### 方法 2: 預編譯版本
+### Method 2: Pre-compiled Version
 
-1. **下載發布包**
-   - 從 Releases 頁面下載最新的 Windows 版本
-   - 檔案名稱: `yt-mp3-service-windows-x64.zip`
+1. **Download Release Package**
+   - Download the latest Windows version from the Releases page
+   - Filename: `yt-mp3-service-windows-x64.zip`
 
-2. **解壓縮**
+2. **Extract**
    ```cmd
-   # 解壓到任意目錄
-   # 例如: C:\yt-mp3-service\
+   # Extract to any directory
+   # Example: C:\yt-mp3-service\
    ```
 
-3. **執行初始化**
+3. **Run Initialization**
    ```cmd
    cd C:\yt-mp3-service
    install.bat
    ```
 
-## 啟動服務
+## Starting Service
 
-### 快速啟動
+### Quick Start
 
 ```cmd
-# 方法 1: 使用服務管理腳本 (推薦)
+# Method 1: Use service management script (recommended)
 scripts\start.bat
 
-# 方法 2: 直接執行
+# Method 2: Direct execution
 bin\yt-mp3.exe
 ```
 
-### 完整服務管理
+### Complete Service Management
 
 ```cmd
-# 啟動服務
+# Start service
 scripts\start.bat
 
-# 檢查服務狀態
+# Check service status
 scripts\status.bat
 
-# 停止服務
+# Stop service
 scripts\stop.bat
 ```
 
-### 服務驗證
+### Service Verification
 
-啟動後在瀏覽器中訪問：
+After startup, visit in browser:
 - **HTTP**: http://127.0.0.1:3000
 - **HTTPS**: https://127.0.0.1:3443
 
-## 停止服務
+## Stopping Service
 
-### 正常停止
+### Normal Stop
 
 ```cmd
-# 使用停止腳本 (推薦)
+# Use stop script (recommended)
 scripts\stop.bat
 
-# 查看停止狀態
+# View stop status
 scripts\status.bat
 ```
 
-### 強制停止
+### Force Stop
 
 ```cmd
-# 如果正常停止失敗，使用強制停止
+# If normal stop fails, use force stop
 taskkill /F /IM yt-mp3.exe
 
-# 清理殘留進程
+# Clean up remaining processes
 tasklist | findstr server
 ```
 
-## 使用方法
+## Usage
 
-### Web 介面操作
+### Web Interface Operation
 
-1. **開啟瀏覽器** 訪問 http://127.0.0.1:3000
+1. **Open Browser** and visit http://127.0.0.1:3000
 
-2. **貼上 YouTube 網址**
-   - 支援單一影片: `https://www.youtube.com/watch?v=VIDEO_ID`
-   - 支援播放清單: `https://www.youtube.com/playlist?list=PLAYLIST_ID`
+2. **Paste YouTube URL**
+   - Support single video: `https://www.youtube.com/watch?v=VIDEO_ID`
+   - Support playlist: `https://www.youtube.com/playlist?list=PLAYLIST_ID`
 
-3. **開始轉換**
-   - 點擊「開始轉碼」按鈕
-   - 等待轉換完成
+3. **Start Conversion**
+   - Click "Start Transcoding" button
+   - Wait for conversion to complete
 
-4. **下載檔案**
-   - 轉換完成後自動顯示下載連結
-   - 點擊下載 MP3 檔案
+4. **Download File**
+   - Download link automatically displayed after completion
+   - Click to download MP3 file
 
-### 服務管理
+### Service Management
 
 ```cmd
-# 檢視服務狀態
+# View service status
 scripts\status.bat
 
-# 檢視運行日誌
+# View runtime logs
 type server.log
 
-# 重啟服務
+# Restart service
 scripts\stop.bat && scripts\start.bat
 ```
 
-### 進階配置
+### Advanced Configuration
 
-#### 修改服務埠
+#### Modify Service Port
 ```cmd
-# 編輯配置 (如果需要)
-# 默認埠: HTTP=3000, HTTPS=3443
+# Edit configuration (if needed)
+# Default ports: HTTP=3000, HTTPS=3443
 ```
 
-#### SSL 證書管理
+#### SSL Certificate Management
 ```cmd
-# 重新生成 SSL 證書
+# Regenerate SSL certificate
 bin\cert-gen.exe
 
-# 檢查證書
+# Check certificate
 dir certs\
 ```
 
-## 故障排除
+## Troubleshooting
 
-### 常見問題
+### Common Issues
 
-#### 服務無法啟動
+#### Service Cannot Start
 ```cmd
-# 檢查埠佔用
+# Check port usage
 netstat -an | findstr ":3000"
 netstat -an | findstr ":3443"
 
-# 檢查防火牆設定
-# Windows Defender 防火牆 > 允許應用程式通過防火牆
+# Check firewall settings
+# Windows Defender Firewall > Allow apps through firewall
 ```
 
-#### 下載失敗
+#### Download Failed
 ```cmd
-# 檢查 yt-dlp 是否存在
+# Check if yt-dlp exists
 dir bin\yt-dlp.exe
 
-# 更新 yt-dlp (如果需要)
-# 從 https://github.com/yt-dlp/yt-dlp/releases 下載最新版本
+# Update yt-dlp (if needed)
+# Download latest version from https://github.com/yt-dlp/yt-dlp/releases
 ```
 
-#### 音頻處理問題
+#### Audio Processing Issues
 ```cmd
-# 檢查 FFmpeg (可選)
-# 下載 FFmpeg 並解壓到 bin\ 目錄
+# Check FFmpeg (optional)
+# Download FFmpeg and extract to bin\ directory
 ```
 
-### 日誌檢查
+### Log Checking
 
 ```cmd
-# 檢視運行日誌
+# View runtime logs
 type server.log
 
-# 檢視最新日誌
+# View latest logs
 powershell "Get-Content server.log -Tail 50"
 ```
 
-## 技術規格
+## Technical Specifications
 
-### 系統需求
-- **作業系統**: Windows 10/11 (64位元)
-- **記憶體**: 最少 256MB RAM
-- **儲存空間**: 100MB 可用空間
-- **網路**: 需要網際網路連線
+### System Requirements
+- **Operating System**: Windows 10/11 (64-bit)
+- **Memory**: Minimum 256MB RAM
+- **Storage**: 100MB available space
+- **Network**: Internet connection required
 
-### 支援格式
-- **輸入**: YouTube 影片網址、播放清單
-- **輸出**: MP3 (128kbps-320kbps)、M4A
+### Supported Formats
+- **Input**: YouTube video URLs, playlists
+- **Output**: MP3 (128kbps-320kbps), M4A
 
-### 技術架構
-- **後端**: Rust + Axum Web 框架
-- **下載引擎**: yt-dlp
-- **音頻處理**: FFmpeg (可選)
-- **SSL/TLS**: 自簽名證書 + Rustls
+### Technical Architecture
+- **Backend**: Rust + Axum Web Framework
+- **Download Engine**: yt-dlp
+- **Audio Processing**: FFmpeg (optional)
+- **SSL/TLS**: Self-signed certificate + Rustls
 
-## 開發資訊
+## Development Information
 
-如需開發相關資訊，請參閱 [DEVELOP.md](DEVELOP.md) 開發指南。
+For development-related information, please refer to the [DEVELOP.md](DEVELOP.md) development guide.
 
-## 授權
+## License
 
-本專案為開源軟體，具體授權條款請查看 LICENSE 文件。
+This project is open source software. Please see the LICENSE file for specific license terms.
 
 ---
 
-**注意**: 請遵守 YouTube 服務條款，僅用於個人合法用途。
+**Note**: Please comply with YouTube Terms of Service and use only for personal legal purposes.

@@ -1,121 +1,121 @@
-# 構建說明
+# Build Instructions
 
-YT-MP3 Service 自動化構建腳本使用指南
+YT-MP3 Service automated build script usage guide
 
-## 可用的構建腳本
+## Available Build Scripts
 
-### 1. Bash 腳本 (推薦)
+### 1. Bash Script (Recommended)
 ```bash
-# 基本構建
+# Basic build
 ./build.sh
 
-# 賦予執行權限（如果需要）
+# Grant execute permission (if needed)
 chmod +x build.sh && ./build.sh
 ```
 
-### 2. Windows 批處理文件
+### 2. Windows Batch File
 ```cmd
 build.bat
 ```
 
-### 3. PowerShell 腳本
+### 3. PowerShell Script
 ```powershell
-# 基本構建
+# Basic build
 .\build.ps1
 
-# 使用debug模式
+# Use debug mode
 .\build.ps1 -Debug
 
-# 跳過證書生成
+# Skip certificate generation
 .\build.ps1 -NoCert
 
-# 強制清理重建
+# Force clean rebuild
 .\build.ps1 -Clean
 ```
 
-## 構建過程
+## Build Process
 
-腳本會自動執行以下步驟：
+The script automatically executes the following steps:
 
-1. **🔍 檢查環境**
-   - 驗證 Rust 工具鏈 (cargo, rustc)
-   - 檢查必要的依賴
+1. **🔍 Environment Check**
+   - Verify Rust toolchain (cargo, rustc)
+   - Check necessary dependencies
 
-2. **🧹 清理構建**
-   - 清理之前的編譯產物
+2. **🧹 Clean Build**
+   - Clean previous build artifacts
 
-3. **📁 準備目錄**
-   - 創建 `bin/`, `certs/`, `downloads/` 目錄
+3. **📁 Directory Preparation**
+   - Create `bin/`, `certs/`, `downloads/` directories
 
-4. **🔧 編譯工具**
-   - 編譯證書生成工具 (`cert-gen`)
-   - 部署到 `bin/cert-gen.exe`
+4. **🔧 Compile Tools**
+   - Compile certificate generation tool (`cert-gen`)
+   - Deploy to `bin/cert-gen.exe`
 
-5. **🔐 生成證書**
-   - 自動生成SSL自簽證書（如果不存在）
-   - 保存到 `certs/cert.pem` 和 `certs/key.pem`
+5. **🔐 Generate Certificates**
+   - Automatically generate SSL self-signed certificates (if not exists)
+   - Save to `certs/cert.pem` and `certs/key.pem`
 
-6. **🚀 編譯服務器**
-   - 編譯主服務器 (`server`)
-   - 部署到 `bin/yt-mp3.exe`
+6. **🚀 Compile Server**
+   - Compile main server (`server`)
+   - Deploy to `bin/yt-mp3.exe`
 
-7. **✅ 驗證部署**
-   - 檢查所有文件是否正確部署
-   - 顯示構建結果和使用說明
+7. **✅ Verify Deployment**
+   - Check if all files are correctly deployed
+   - Display build results and usage instructions
 
-## 構建產物
+## Build Artifacts
 
-構建完成後，`bin/` 目錄包含：
+After build completion, the `bin/` directory contains:
 
-- `cert-gen.exe` - SSL證書生成工具
-- `yt-mp3.exe` - 主服務器程序
-- `yt-dlp.exe` - YouTube下載工具（需手動放置）
-- `ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe` - 音頻處理工具
+- `cert-gen.exe` - SSL certificate generation tool
+- `yt-mp3.exe` - Main server program
+- `yt-dlp.exe` - YouTube download tool (needs manual placement)
+- `ffmpeg.exe`, `ffplay.exe`, `ffprobe.exe` - Audio processing tools
 
-## 使用方法
+## Usage
 
-### 生成新證書
+### Generate New Certificate
 ```bash
 bin/cert-gen.exe
 ```
 
-### 啟動服務器
+### Start Server
 ```bash
-# 直接啟動
+# Direct start
 bin/yt-mp3.exe
 
-# 或使用服務管理腳本
+# Or use service management script
 scripts/start.bat
 ```
 
-### 訪問服務
+### Access Service
 - HTTP: http://127.0.0.1:3000
 - HTTPS: https://127.0.0.1:3443
 
-## 故障排除
+## Troubleshooting
 
-### 權限問題
-如果在Linux/Mac上遇到權限問題：
+### Permission Issues
+If encountering permission issues on Linux/Mac:
 ```bash
 chmod +x build.sh
 chmod +x bin/*
 ```
 
-### Rust工具鏈問題
-確保已安裝Rust：
+### Rust Toolchain Issues
+Ensure Rust is installed:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-### 證書問題
-重新生成證書：
+### Certificate Issues
+Regenerate certificate:
 ```bash
 rm certs/*
 bin/cert-gen.exe
 ```
 
-### 端口佔用
-如果端口被佔用，終止現有進程：
+### Port Occupation
+If port is occupied, terminate existing process:
 ```bash
 # Linux/Mac
 pkill -f server
@@ -124,28 +124,28 @@ pkill -f server
 taskkill /F /IM yt-mp3.exe
 ```
 
-## 開發模式
+## Development Mode
 
-使用debug模式進行開發：
+Use debug mode for development:
 ```powershell
 .\build.ps1 -Debug
 ```
 
-Debug模式特點：
-- 編譯速度更快
-- 包含調試符號
-- 文件大小較大
-- 性能較低
+Debug mode features:
+- Faster compilation
+- Includes debug symbols
+- Larger file size
+- Lower performance
 
-## 生產部署
+## Production Deployment
 
-使用release模式進行生產部署：
+Use release mode for production deployment:
 ```bash
-./build.sh  # 默認使用release模式
+./build.sh  # Uses release mode by default
 ```
 
-Release模式特點：
-- 編譯時間較長
-- 優化的機器碼
-- 文件大小較小
-- 性能最佳
+Release mode features:
+- Longer compilation time
+- Optimized machine code
+- Smaller file size
+- Best performance

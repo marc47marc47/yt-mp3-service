@@ -1,207 +1,207 @@
-# Release 打包說明
+# Release Packaging Guide
 
-YT-MP3 Service Release 打包和分發指南
+YT-MP3 Service Release packaging and distribution guide
 
-## 創建Release包
+## Creating Release Package
 
-### 使用Bash腳本
+### Using Bash Script
 ```bash
-# 創建release包
+# Create release package
 ./build.sh --release
 
-# 清理後創建release包
+# Clean and create release package
 ./build.sh --clean --release
 
-# 查看幫助
+# View help
 ./build.sh --help
 ```
 
 
-## Release包結構
+## Release Package Structure
 
-創建的release包包含以下結構：
+The created release package contains the following structure:
 
 ```
 yt-mp3-service_YYYYMMDD_HHMMSS/
-├── bin/                    # 可執行文件
-│   ├── yt-mp3.exe         # 主服務器程序
-│   ├── cert-gen.exe       # SSL證書生成工具
-│   ├── yt-dlp.exe         # YouTube下載工具
-│   ├── ffmpeg.exe         # 音頻處理工具
-│   ├── ffplay.exe         # 音頻播放工具
-│   └── ffprobe.exe        # 音頻信息工具
-├── certs/                 # SSL證書目錄
-│   ├── cert.pem          # SSL證書
-│   └── key.pem           # SSL私鑰
-├── downloads/             # 下載文件目錄
-├── scripts/               # 管理腳本
-│   ├── service.sh        # 統一服務管理腳本
-│   ├── start.sh          # 啟動腳本
-│   ├── stop.sh           # 停止腳本
-│   ├── status.sh         # 狀態檢查腳本
-│   └── build.sh          # 構建腳本
-├── docs/                  # 文檔目錄
-│   ├── BUILD.md          # 構建說明
-│   ├── SERVICE.md        # 服務管理說明
-│   └── Cargo.toml        # 項目配置
-├── install.sh             # 安裝腳本
-└── PACKAGE_INFO.txt       # 包信息文件
+├── bin/                    # Executable files
+│   ├── yt-mp3.exe         # Main server program
+│   ├── cert-gen.exe       # SSL certificate generation tool
+│   ├── yt-dlp.exe         # YouTube download tool
+│   ├── ffmpeg.exe         # Audio processing tool
+│   ├── ffplay.exe         # Audio playback tool
+│   └── ffprobe.exe        # Audio information tool
+├── certs/                 # SSL certificate directory
+│   ├── cert.pem          # SSL certificate
+│   └── key.pem           # SSL private key
+├── downloads/             # Download files directory
+├── scripts/               # Management scripts
+│   ├── service.sh        # Unified service management script
+│   ├── start.sh          # Start script
+│   ├── stop.sh           # Stop script
+│   ├── status.sh         # Status check script
+│   └── build.sh          # Build script
+├── docs/                  # Documentation directory
+│   ├── BUILD.md          # Build instructions
+│   ├── SERVICE.md        # Service management instructions
+│   └── Cargo.toml        # Project configuration
+├── install.sh             # Installation script
+└── PACKAGE_INFO.txt       # Package information file
 ```
 
-## 分發格式
+## Distribution Formats
 
-release包會自動創建以下格式：
+The release package will automatically create the following formats:
 
 - **tar.gz**: `yt-mp3-service_YYYYMMDD_HHMMSS.tar.gz`
 - **zip**: `yt-mp3-service_YYYYMMDD_HHMMSS.zip`
 
-## 安裝流程
+## Installation Process
 
-### 方法1: 使用安裝腳本 (推薦)
+### Method 1: Using Installation Script (Recommended)
 
 ```bash
-# 解壓包
+# Extract package
 tar -xzf yt-mp3-service_YYYYMMDD_HHMMSS.tar.gz
 cd yt-mp3-service_YYYYMMDD_HHMMSS
 
-# 或解壓 zip 包
+# Or extract zip package
 unzip yt-mp3-service_YYYYMMDD_HHMMSS.zip
 cd yt-mp3-service_YYYYMMDD_HHMMSS
 
-# 運行安裝腳本
+# Run installation script
 ./install.sh
 ```
 
-### 方法2: 手動安裝
+### Method 2: Manual Installation
 
 ```bash
-# 創建安裝目錄
+# Create installation directory
 mkdir ~/yt-mp3-service
 cd ~/yt-mp3-service
 
-# 複製解壓的文件
+# Copy extracted files
 cp -r /path/to/extracted/package/* .
 
-# 設置執行權限 (Linux/macOS)
+# Set execute permissions (Linux/macOS)
 chmod +x bin/*
 chmod +x scripts/*.sh
 
-# 創建管理腳本鏈接
+# Create management script link
 ln -sf scripts/service.sh service
 ```
 
-## 使用Release包
+## Using Release Package
 
-### 啟動服務
+### Starting Service
 ```bash
-# 進入安裝目錄
+# Enter installation directory
 cd ~/yt-mp3-service
 
-# 啟動服務
+# Start service
 ./service start
 
-# 或使用腳本目錄
+# Or use script directory
 ./scripts/service.sh start
 ```
 
-### 管理服務
+### Managing Service
 ```bash
-# 查看狀態
+# Check status
 ./service status
 
-# 停止服務
+# Stop service
 ./service stop
 
-# 重啟服務
+# Restart service
 ./service restart
 
-# 查看日志
+# View logs
 ./service logs
 ```
 
-### 訪問服務
+### Accessing Service
 - HTTP: http://127.0.0.1:3000
 - HTTPS: https://127.0.0.1:3443
 
-## 系統要求
+## System Requirements
 
-### 最低要求
-- **內存**: 256MB RAM
-- **磁盤**: 100MB 可用空間
-- **網絡**: 互聯網連接 (下載YouTube內容)
+### Minimum Requirements
+- **Memory**: 256MB RAM
+- **Disk**: 100MB available space
+- **Network**: Internet connection (for downloading YouTube content)
 
-### 支持的操作系統
+### Supported Operating Systems
 - Windows 10/11
 - Ubuntu 18.04+
 - CentOS 7+
 - macOS 10.14+
-- 其他支持Rust的Linux發行版
+- Other Linux distributions that support Rust
 
-## 自定義配置
+## Custom Configuration
 
-### SSL證書
+### SSL Certificate
 ```bash
-# 重新生成證書
+# Regenerate certificate
 ./bin/cert-gen.exe
 
-# 或使用自己的證書
+# Or use your own certificate
 cp your-cert.pem certs/cert.pem
 cp your-key.pem certs/key.pem
 ```
 
-### 端口配置
-默認端口：
+### Port Configuration
+Default ports:
 - HTTP: 3000
 - HTTPS: 3443
 
-如需修改端口，需要重新編譯源代碼。
+To modify ports, you need to recompile the source code.
 
-## 故障排除
+## Troubleshooting
 
-### 安裝問題
+### Installation Issues
 ```bash
-# 檢查文件權限
+# Check file permissions
 ls -la bin/
 chmod +x bin/*
 
-# 檢查依賴
+# Check dependencies
 ./bin/yt-mp3.exe --help
 ```
 
-### 運行問題
+### Runtime Issues
 ```bash
-# 查看詳細狀態
+# View detailed status
 ./service status --detailed
 
-# 查看日志
+# View logs
 ./service logs --follow
 
-# 檢查端口
+# Check ports
 netstat -tulnp | grep -E ":(3000|3443)"
 ```
 
-### 權限問題
+### Permission Issues
 ```bash
-# Linux/macOS設置權限
+# Linux/macOS set permissions
 chmod +x bin/*
 chmod +x scripts/*.sh
 
-# 檢查SSL證書權限
+# Check SSL certificate permissions
 ls -la certs/
 ```
 
-## 卸載
+## Uninstallation
 
-### 自動卸載
+### Automatic Uninstallation
 ```bash
-# 停止服務
+# Stop service
 ./service stop
 
-# 刪除安裝目錄
+# Remove installation directory
 rm -rf ~/yt-mp3-service
 ```
 
-### 清理系統服務 (如果配置了)
+### Clean System Services (if configured)
 ```bash
 # systemd (Linux)
 sudo systemctl stop yt-mp3
@@ -213,31 +213,31 @@ sudo launchctl unload /Library/LaunchDaemons/com.yt-mp3.plist
 sudo rm /Library/LaunchDaemons/com.yt-mp3.plist
 ```
 
-## 更新
+## Updates
 
-### 更新到新版本
+### Update to New Version
 ```bash
-# 停止當前服務
+# Stop current service
 ./service stop
 
-# 備份配置 (如果有自定義)
+# Backup configuration (if customized)
 cp certs/cert.pem ../backup/
 cp certs/key.pem ../backup/
 
-# 安裝新版本
-# (按照新版本的安裝步驟)
+# Install new version
+# (follow new version installation steps)
 
-# 恢復自定義配置
+# Restore custom configuration
 cp ../backup/cert.pem certs/
 cp ../backup/key.pem certs/
 
-# 啟動新版本
+# Start new version
 ./service start
 ```
 
-## 生產環境部署
+## Production Environment Deployment
 
-### 系統服務配置
+### System Service Configuration
 
 #### systemd (Linux)
 ```ini
@@ -259,7 +259,7 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-#### 反向代理 (nginx)
+#### Reverse Proxy (nginx)
 ```nginx
 server {
     listen 80;
@@ -275,17 +275,17 @@ server {
 }
 ```
 
-### 安全考慮
-1. 使用專用用戶運行服務
-2. 配置防火墻規則
-3. 使用有效的SSL證書
-4. 定期更新依賴
-5. 監控系統資源
+### Security Considerations
+1. Use dedicated user to run service
+2. Configure firewall rules
+3. Use valid SSL certificates
+4. Regularly update dependencies
+5. Monitor system resources
 
-## 技術支持
+## Technical Support
 
-如遇到問題，請：
-1. 查看 `docs/` 目錄中的文檔
-2. 檢查 `PACKAGE_INFO.txt` 中的版本信息
-3. 使用 `./service status --detailed` 查看詳細狀態
-4. 查看服務日志 `./service logs`
+If you encounter issues, please:
+1. Check documentation in `docs/` directory
+2. Check version information in `PACKAGE_INFO.txt`
+3. Use `./service status --detailed` to view detailed status
+4. View service logs with `./service logs`

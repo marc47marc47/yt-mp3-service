@@ -18,18 +18,18 @@ use std::{
 use tower_http::services::ServeDir;
 use uuid::Uuid;
 
-// 任務狀態枚舉
+// Task status enum
 #[derive(Debug, Clone)]
 enum TaskStatus {
     Processing,
-    Completed(String, Option<String>), // 儲存音頻檔案路徑和縮圖檔案路徑
-    Failed(String),    // 儲存錯誤訊息
+    Completed(String, Option<String>), // Store audio file path and thumbnail file path
+    Failed(String),    // Store error message
 }
 
-// 全域任務狀態管理
+// Global task status management
 type TaskMap = Arc<Mutex<HashMap<String, TaskStatus>>>;
 
-// 表單資料結構
+// Form data structure
 #[derive(Deserialize)]
 struct ConvertForm {
     youtube_url: String,
@@ -37,16 +37,16 @@ struct ConvertForm {
 
 #[tokio::main]
 async fn main() {
-    // 創建下載目錄
+    // Create download directory
     let download_dir = "downloads";
     if !std::path::Path::new(download_dir).exists() {
-        fs::create_dir_all(download_dir).expect("無法創建下載目錄");
+        fs::create_dir_all(download_dir).expect("Failed to create download directory");
     }
 
-    // 初始化任務狀態管理
+    // Initialize task status management
     let tasks: TaskMap = Arc::new(Mutex::new(HashMap::new()));
 
-    // 設置路由
+    // Setup routes
     let app = Router::new()
         .route("/", get(index_page))
         .route("/convert", post(convert_youtube))
@@ -56,45 +56,45 @@ async fn main() {
         .nest_service("/static", ServeDir::new("static"))
         .with_state(tasks);
 
-    // 配置TLS
+    // Configure TLS
     let config = RustlsConfig::from_pem_file(
         PathBuf::from("certs/cert.pem"),
         PathBuf::from("certs/key.pem"),
     )
     .await
-    .expect("無法載入SSL證書");
+    .expect("Failed to load SSL certificate");
     
-    println!("🚀 HTTPS伺服器已啟動在 https://127.0.0.1:3443");
-    println!("🌐 HTTP伺服器已啟動在 http://127.0.0.1:3000");
+    println!("🚀 HTTPS server started at https://127.0.0.1:3443");
+    println!("🌐 HTTP server started at http://127.0.0.1:3000");
     
-    // 同時啟動HTTP和HTTPS伺服器
+    // Start both HTTP and HTTPS servers
     let app_clone = app.clone();
     tokio::spawn(async move {
-        // HTTP伺服器
+        // HTTP server
         let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
             .await
-            .expect("無法綁定到端口 3000");
+            .expect("Unable to bind to port 3000");
         axum::serve(listener, app_clone)
             .await
-            .expect("HTTP伺服器啟動失敗");
+            .expect("Failed to start HTTP server");
     });
     
-    // HTTPS伺服器
+    // HTTPS server
     axum_server::bind_rustls("127.0.0.1:3443".parse().unwrap(), config)
         .serve(app.into_make_service())
         .await
-        .expect("HTTPS伺服器啟動失敗");
+        .expect("Failed to start HTTPS server");
 }
 
-// 首頁
+// Home page
 async fn index_page() -> Html<&'static str> {
     Html(r#"
     <!DOCTYPE html>
-    <html lang="zh-TW">
+    <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>YouTube to MP3 轉碼器</title>
+        <title>YouTube to MP3 Converter</title>
         <style>
             * {
                 margin: 0;
@@ -237,17 +237,17 @@ async fn index_page() -> Html<&'static str> {
             <h1>🎵 YouTube to MP3</h1>
             <form id="convertForm">
                 <div class="form-group">
-                    <label for="youtube_url">YouTube 網址:</label>
+                    <label for="youtube_url">YouTube URL:</label>
                     <input 
                         type="url" 
                         id="youtube_url" 
                         name="youtube_url" 
-                        placeholder="請輸入 YouTube 影片網址..."
+                        placeholder="Please enter YouTube video URL..."
                         required
                     >
                 </div>
                 <button type="submit" class="convert-btn" id="convertBtn">
-                    開始轉碼
+                    Start Conversion
                 </button>
             </form>
             
@@ -265,9 +265,9 @@ async fn index_page() -> Html<&'static str> {
                 const convertBtn = document.getElementById('convertBtn');
                 const statusDiv = document.getElementById('status');
                 
-                // 禁用按鈕並顯示處理中狀態
+                // Disable button and show processing status
                 convertBtn.disabled = true;
-                convertBtn.innerHTML = '<div class="spinner"></div>處理中...';
+                convertBtn.innerHTML = '<div class="spinner"></div>Processing...';
                 
                 try {
                     const response = await fetch('/convert', {
@@ -284,20 +284,20 @@ async fn index_page() -> Html<&'static str> {
                         currentTaskId = result.task_id;
                         statusDiv.style.display = 'block';
                         statusDiv.className = 'status-processing';
-                        statusDiv.innerHTML = '<div class="spinner"></div>正在轉碼中，請稍候...';
+                        statusDiv.innerHTML = '<div class="spinner"></div>Converting, please wait...';
                         
-                        // 開始輪詢狀態
+                        // Start polling status
                         statusInterval = setInterval(checkStatus, 2000);
                     } else {
-                        throw new Error(result.error || '轉碼失敗');
+                        throw new Error(result.error || 'Conversion failed');
                     }
                 } catch (error) {
                     statusDiv.style.display = 'block';
                     statusDiv.className = 'status-failed';
-                    statusDiv.innerHTML = `❌ 錯誤: ${error.message}`;
+                    statusDiv.innerHTML = `❌ Error: ${error.message}`;
                     
                     convertBtn.disabled = false;
-                    convertBtn.innerHTML = '開始轉碼';
+                    convertBtn.innerHTML = 'Start Conversion';
                 }
             });
             
@@ -319,34 +319,34 @@ async fn index_page() -> Html<&'static str> {
                             thumbnailHtml = `
                                 <div style="margin: 10px 0;">
                                     <img src="/thumbnail/${result.thumbnail}" 
-                                         alt="影片縮圖" 
+                                         alt="Video thumbnail" 
                                          style="max-width: 200px; max-height: 150px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                                 </div>
                             `;
                         }
                         
                         statusDiv.innerHTML = `
-                            ✅ 轉碼完成！
+                            ✅ Conversion completed!
                             ${thumbnailHtml}
                             <a href="/download/${result.filename}" class="download-link" download>
-                                📥 下載 MP3
+                                📥 Download MP3
                             </a>
                         `;
                         
                         convertBtn.disabled = false;
-                        convertBtn.innerHTML = '開始轉碼';
+                        convertBtn.innerHTML = 'Start Conversion';
                         currentTaskId = null;
                     } else if (result.status === 'failed') {
                         clearInterval(statusInterval);
                         statusDiv.className = 'status-failed';
-                        statusDiv.innerHTML = `❌ 轉碼失敗: ${result.error}`;
+                        statusDiv.innerHTML = `❌ Conversion failed: ${result.error}`;
                         
                         convertBtn.disabled = false;
-                        convertBtn.innerHTML = '開始轉碼';
+                        convertBtn.innerHTML = 'Start Conversion';
                         currentTaskId = null;
                     }
                 } catch (error) {
-                    console.error('檢查狀態時發生錯誤:', error);
+                    console.error('Error occurred while checking status:', error);
                 }
             }
         </script>
@@ -355,28 +355,28 @@ async fn index_page() -> Html<&'static str> {
     "#)
 }
 
-// 轉碼處理
+// Conversion processing
 async fn convert_youtube(
     axum::extract::State(tasks): axum::extract::State<TaskMap>,
     Form(form): Form<ConvertForm>,
 ) -> Result<axum::response::Json<serde_json::Value>, StatusCode> {
-    // 驗證 YouTube URL
+    // Validate YouTube URL
     if !form.youtube_url.contains("youtube.com") && !form.youtube_url.contains("youtu.be") {
         return Ok(axum::response::Json(serde_json::json!({
-            "error": "請提供有效的 YouTube 網址"
+            "error": "Please provide a valid YouTube URL"
         })));
     }
     
-    // 生成唯一任務 ID
+    // Generate unique task ID
     let task_id = Uuid::new_v4().to_string();
     
-    // 將任務標記為處理中
+    // Mark task as processing
     {
         let mut tasks_lock = tasks.lock().unwrap();
         tasks_lock.insert(task_id.clone(), TaskStatus::Processing);
     }
     
-    // 異步執行轉碼
+    // Execute conversion asynchronously
     let tasks_clone = tasks.clone();
     let task_id_clone = task_id.clone();
     let url = form.youtube_url.clone();
@@ -401,17 +401,17 @@ async fn convert_youtube(
     })))
 }
 
-// 實際執行轉碼
+// Actually perform conversion
 async fn perform_conversion(url: &str) -> Result<(String, Option<String>), String> {
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_secs();
     
-    // 使用時間戳創建唯一的輸出模板，避免文件名衝突
+    // Use timestamp to create unique output template, avoiding filename conflicts
     let output_template = format!("downloads/%(title).100s_{}.%(ext)s", timestamp);
     
-    // 執行 yt-dlp 命令下載音頻和縮圖
+    // Execute yt-dlp command to download audio and thumbnail
     let output = Command::new("bin/yt-dlp.exe")
         .args([
             "--extract-audio",
@@ -426,25 +426,25 @@ async fn perform_conversion(url: &str) -> Result<(String, Option<String>), Strin
     match output {
         Ok(result) => {
             if result.status.success() {
-                // 查找最新創建的mp3和縮圖文件
+                // Find the latest created mp3 and thumbnail files
                 match find_latest_downloaded_files(timestamp) {
                     Some((audio_filename, thumbnail_filename)) => {
                         Ok((audio_filename, thumbnail_filename))
                     }
                     None => {
-                        Err("轉碼完成但找不到下載的檔案".to_string())
+                        Err("Conversion completed but downloaded files not found".to_string())
                     }
                 }
             } else {
                 let error_msg = String::from_utf8_lossy(&result.stderr);
-                Err(format!("yt-dlp 執行失敗: {}", error_msg))
+                Err(format!("yt-dlp execution failed: {}", error_msg))
             }
         }
-        Err(e) => Err(format!("無法執行 bin/yt-dlp.exe: {}。請確保 yt-dlp.exe 在 bin/ 目錄中", e)),
+        Err(e) => Err(format!("Cannot execute bin/yt-dlp.exe: {}. Please ensure yt-dlp.exe is in the bin/ directory", e)),
     }
 }
 
-// 查找最新下載的文件
+// Find the latest downloaded files
 fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<String>)> {
     use std::fs;
     use std::time::UNIX_EPOCH;
@@ -467,17 +467,17 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
                     if let Ok(modified) = metadata.modified() {
                         if let Ok(duration) = modified.duration_since(UNIX_EPOCH) {
                             let file_timestamp = duration.as_secs();
-                            // 檢查在轉換開始後創建或修改的文件
+                            // Check files created or modified after conversion started
                             if file_timestamp >= since_timestamp {
                                 if let Some(filename) = path.file_name() {
                                     let filename_str = filename.to_string_lossy().to_string();
                                     
-                                    // 查找最新的音頻文件
+                                    // Find the latest audio file
                                     if filename_str.ends_with(".mp3") && file_timestamp > latest_audio_time {
                                         latest_audio_file = Some(filename_str.clone());
                                         latest_audio_time = file_timestamp;
                                     } 
-                                    // 查找最新的縮圖文件
+                                    // Find the latest thumbnail file
                                     else if (filename_str.ends_with(".jpg") || 
                                               filename_str.ends_with(".jpeg") || 
                                               filename_str.ends_with(".png") || 
@@ -495,8 +495,8 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
         }
     }
     
-    // 如果找不到新的音頻文件，嘗試查找downloads目錄中的任何mp3文件
-    // 這可以處理文件被覆蓋但時間戳沒有更新的情況
+    // If no new audio file is found, try to find any mp3 file in downloads directory
+    // This handles cases where files are overwritten but timestamps are not updated
     if latest_audio_file.is_none() {
         if let Ok(entries) = fs::read_dir(downloads_dir) {
             for entry in entries {
@@ -505,7 +505,7 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
                     if let Some(filename) = path.file_name() {
                         let filename_str = filename.to_string_lossy().to_string();
                         if filename_str.ends_with(".mp3") {
-                            // 驗證文件確實存在且可讀
+                            // Verify the file actually exists and is readable
                             if path.exists() && fs::metadata(&path).is_ok() {
                                 latest_audio_file = Some(filename_str);
                                 break;
@@ -524,9 +524,9 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
     }
 }
 
-// 從yt-dlp的JSON輸出中提取標題
+// Extract title from yt-dlp's JSON output
 fn extract_title_from_json(json_str: &str) -> Option<String> {
-    // 簡單的JSON解析來獲取title字段
+    // Simple JSON parsing to get title field
     if let Ok(json_value) = serde_json::from_str::<serde_json::Value>(json_str) {
         if let Some(title) = json_value.get("title") {
             if let Some(title_str) = title.as_str() {
@@ -537,25 +537,25 @@ fn extract_title_from_json(json_str: &str) -> Option<String> {
     None
 }
 
-// 清理檔案名稱，移除不安全的字符
+// Clean filename, remove unsafe characters
 fn sanitize_filename(title: &str) -> String {
     let mut sanitized = title.to_string();
     
-    // 移除或替換不安全的字符
+    // Remove or replace unsafe characters
     let unsafe_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|'];
     for char in unsafe_chars {
         sanitized = sanitized.replace(char, "_");
     }
     
-    // 移除多餘的空格並替換為下劃線
+    // Remove extra spaces and replace with underscores
     sanitized = sanitized.trim().replace(' ', "_");
     
-    // 限制長度以避免檔案名過長
+    // Limit length to avoid filename being too long
     if sanitized.len() > 100 {
         sanitized.truncate(100);
     }
     
-    // 如果清理後為空，使用預設名稱
+    // If empty after cleaning, use default name
     if sanitized.is_empty() {
         sanitized = format!("YouTube_Audio_{}", 
             SystemTime::now()
@@ -567,7 +567,7 @@ fn sanitize_filename(title: &str) -> String {
     sanitized
 }
 
-// 查找縮圖文件
+// Find thumbnail file
 fn find_thumbnail_file(base_filename: &str) -> Option<String> {
     let extensions = ["jpg", "jpeg", "png", "webp"];
     for ext in &extensions {
@@ -580,7 +580,7 @@ fn find_thumbnail_file(base_filename: &str) -> Option<String> {
     None
 }
 
-// 檢查任務狀態
+// Check task status
 async fn check_status(
     axum::extract::State(tasks): axum::extract::State<TaskMap>,
     Path(task_id): Path<String>,
@@ -614,17 +614,17 @@ async fn check_status(
         None => {
             axum::response::Json(serde_json::json!({
                 "status": "not_found",
-                "error": "找不到該任務"
+                "error": "Task not found"
             }))
         }
     }
 }
 
-// 檔案下載
+// File download
 async fn download_file(Path(filename): Path<String>) -> impl IntoResponse {
     let file_path = PathBuf::from("downloads").join(&filename);
     
-    // 安全性檢查：確保檔案在 downloads 目錄內
+    // Security check: ensure file is within downloads directory
     if !file_path.starts_with("downloads") {
         return Err(StatusCode::FORBIDDEN);
     }
@@ -642,23 +642,23 @@ async fn download_file(Path(filename): Path<String>) -> impl IntoResponse {
     }
 }
 
-// 縮圖服務
+// Thumbnail service
 async fn serve_thumbnail(Path(filename): Path<String>) -> impl IntoResponse {
     let file_path = PathBuf::from("downloads").join(&filename);
     
-    // 安全性檢查：確保檔案在 downloads 目錄內
+    // Security check: ensure file is within downloads directory
     if !file_path.starts_with("downloads") {
         return Err(StatusCode::FORBIDDEN);
     }
     
     match fs::read(&file_path) {
         Ok(contents) => {
-            // 根據文件擴展名確定內容類型
+            // Determine content type based on file extension
             let content_type = match file_path.extension().and_then(|ext| ext.to_str()) {
                 Some("jpg") | Some("jpeg") => "image/jpeg",
                 Some("png") => "image/png", 
                 Some("webp") => "image/webp",
-                _ => "image/jpeg", // 默認
+                _ => "image/jpeg", // Default
             };
             
             let headers = [

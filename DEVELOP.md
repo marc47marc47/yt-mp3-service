@@ -1,166 +1,166 @@
-# YT-MP3 Service 開發指南
+# YT-MP3 Service Development Guide
 
-一個使用 Rust 和 Axum 構建的高性能 YouTube 轉 MP3 服務的完整開發文檔。
+Comprehensive development documentation for a high-performance YouTube to MP3 service built with Rust and Axum.
 
-## 目錄
+## Table of Contents
 
-- [快速開始](#快速開始)
-- [項目架構](#項目架構)
-- [開發環境設置](#開發環境設置)
-- [構建系統](#構建系統)
-- [服務管理](#服務管理)
-- [開發工作流程](#開發工作流程)
-- [測試與調試](#測試與調試)
-- [代碼風格與規範](#代碼風格與規範)
-- [部署指南](#部署指南)
-- [問題排除](#問題排除)
-- [貢獻指南](#貢獻指南)
+- [Quick Start](#quick-start)
+- [Project Architecture](#project-architecture)
+- [Development Environment Setup](#development-environment-setup)
+- [Build System](#build-system)
+- [Service Management](#service-management)
+- [Development Workflow](#development-workflow)
+- [Testing and Debugging](#testing-and-debugging)
+- [Code Style and Standards](#code-style-and-standards)
+- [Deployment Guide](#deployment-guide)
+- [Troubleshooting](#troubleshooting)
+- [Contributing Guide](#contributing-guide)
 
-## 快速開始
+## Quick Start
 
-### 開發環境要求
+### Development Environment Requirements
 
-- **Rust**: 最新穩定版本 (1.70+)
-- **Cargo**: Rust 包管理器
-- **FFmpeg**: 音頻處理工具 (可選)
-- **網絡連接**: 下載 yt-dlp 和處理 YouTube 內容
+- **Rust**: Latest stable version (1.70+)
+- **Cargo**: Rust package manager
+- **FFmpeg**: Audio processing tool (optional)
+- **Network Connection**: For downloading yt-dlp and processing YouTube content
 
-### 快速設置
+### Quick Setup
 
 ```bash
-# 1. 克隆項目
+# 1. Clone project
 git clone <repository-url>
 cd yt-mp3-service
 
-# 2. 檢查 Rust 環境
+# 2. Check Rust environment
 cargo --version
 rustc --version
 
-# 3. 構建項目
+# 3. Build project
 ./build.sh
 
-# 4. 啟動服務
+# 4. Start service
 scripts/service.sh start
 
-# 5. 訪問服務
+# 5. Access service
 # HTTP: http://127.0.0.1:3000
 # HTTPS: https://127.0.0.1:3443
 ```
 
-## 項目架構
+## Project Architecture
 
-### 目錄結構
+### Directory Structure
 
 ```
 yt-mp3-service/
-├── src/                        # 源代碼
-│   ├── main.rs                # 主服務器應用
-│   └── bin/                   # 二進制工具
-│       └── cert-gen.rs        # SSL 證書生成工具
-├── bin/                       # 編譯產物和工具
-│   ├── server(.exe)           # 主服務器程序
-│   ├── cert-gen(.exe)         # 證書生成工具
-│   ├── yt-dlp(.exe)          # YouTube 下載工具
-│   └── ffmpeg/               # 音頻處理工具
-├── certs/                    # SSL 證書
-│   ├── cert.pem              # 公鑰證書
-│   └── key.pem               # 私鑰
-├── downloads/                # 下載文件存儲
-├── scripts/                  # 服務管理腳本
-│   ├── service.sh           # 統一服務管理腳本
-│   ├── start.sh/start.bat   # 啟動腳本
-│   ├── stop.sh/stop.bat     # 停止腳本
-│   └── status.sh/status.bat # 狀態檢查腳本
-├── docs/                     # 文檔目錄
-│   ├── BUILD.md              # 構建說明
-│   ├── SERVICE.md            # 服務管理說明
-│   └── DEVELOP.md            # 開發指南 (本文件)
-├── build.sh                  # 主構建腳本
-├── Cargo.toml               # Rust 項目配置
-└── README.md                # 項目說明
+├── src/                        # Source code
+│   ├── main.rs                # Main server application
+│   └── bin/                   # Binary tools
+│       └── cert-gen.rs        # SSL certificate generation tool
+├── bin/                       # Compiled artifacts and tools
+│   ├── server(.exe)           # Main server program
+│   ├── cert-gen(.exe)         # Certificate generation tool
+│   ├── yt-dlp(.exe)          # YouTube download tool
+│   └── ffmpeg/               # Audio processing tools
+├── certs/                    # SSL certificates
+│   ├── cert.pem              # Public key certificate
+│   └── key.pem               # Private key
+├── downloads/                # Downloaded file storage
+├── scripts/                  # Service management scripts
+│   ├── service.sh           # Unified service management script
+│   ├── start.sh/start.bat   # Start script
+│   ├── stop.sh/stop.bat     # Stop script
+│   └── status.sh/status.bat # Status check script
+├── docs/                     # Documentation directory
+│   ├── BUILD.md              # Build instructions
+│   ├── SERVICE.md            # Service management instructions
+│   └── DEVELOP.md            # Development guide (this file)
+├── build.sh                  # Main build script
+├── Cargo.toml               # Rust project configuration
+└── README.md                # Project description
 ```
 
-### 核心組件
+### Core Components
 
-#### 1. Web 服務器 (`src/main.rs`)
-- 基於 Axum 框架
-- 支持 HTTP/HTTPS 雙協議
-- 異步處理請求
-- 任務狀態管理
+#### 1. Web Server (`src/main.rs`)
+- Based on Axum framework
+- Supports HTTP/HTTPS dual protocols
+- Asynchronous request processing
+- Task status management
 
-#### 2. SSL 證書生成器 (`src/bin/cert-gen.rs`)
-- 自動生成自簽名證書
-- 支持 RSA 和 ECDSA 算法
-- 證書有效期管理
+#### 2. SSL Certificate Generator (`src/bin/cert-gen.rs`)
+- Automatically generates self-signed certificates
+- Supports RSA and ECDSA algorithms
+- Certificate validity management
 
-#### 3. 服務管理系統
-- 跨平台服務控制
-- 進程監控和重啟
-- 日志管理
-- 狀態檢查
+#### 3. Service Management System
+- Cross-platform service control
+- Process monitoring and restart
+- Log management
+- Status checking
 
-### 技術棧
+### Technology Stack
 
-#### Rust 依賴
+#### Rust Dependencies
 
 ```toml
-# Web 框架
-axum = "0.7"                    # 現代異步 Web 框架
-axum-server = "0.6"             # HTTPS 服務器支持
+# Web framework
+axum = "0.7"                    # Modern asynchronous Web framework
+axum-server = "0.6"             # HTTPS server support
 
-# 異步運行時
+# Asynchronous runtime
 tokio = { version = "1.0", features = ["full"] }
 
-# 中間件和工具
-tower = "0.4"                   # 服務抽象層
-tower-http = "0.5"              # HTTP 中間件
+# Middleware and tools
+tower = "0.4"                   # Service abstraction layer
+tower-http = "0.5"              # HTTP middleware
 
-# 序列化
+# Serialization
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
-# 其他工具
-uuid = "1.0"                    # UUID 生成
-rustls = "0.21"                 # TLS 實現
-rcgen = "0.11"                  # 證書生成
-time = "0.3"                    # 時間處理
+# Other tools
+uuid = "1.0"                    # UUID generation
+rustls = "0.21"                 # TLS implementation
+rcgen = "0.11"                  # Certificate generation
+time = "0.3"                    # Time handling
 ```
 
-#### 外部工具
+#### External Tools
 
-- **yt-dlp**: YouTube 內容下載
-- **FFmpeg**: 音頻格式轉換和處理
+- **yt-dlp**: YouTube content download
+- **FFmpeg**: Audio format conversion and processing
 
-## 開發環境設置
+## Development Environment Setup
 
-### 1. Rust 工具鏈安裝
+### 1. Rust Toolchain Installation
 
 ```bash
-# 安裝 Rust
+# Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# 重新加載環境
+# Reload environment
 source $HOME/.cargo/env
 
-# 驗證安裝
+# Verify installation
 cargo --version
 rustc --version
 ```
 
-### 2. 開發工具
+### 2. Development Tools
 
 ```bash
-# 代碼格式化
+# Code formatting
 cargo install rustfmt
 
-# 代碼檢查
+# Code checking
 cargo install clippy
 
-# 文檔生成
+# Documentation generation
 cargo doc --open
 ```
 
-### 3. IDE 配置推薦
+### 3. Recommended IDE Configuration
 
 #### VS Code
 ```json
@@ -172,340 +172,340 @@ cargo doc --open
 ```
 
 #### IntelliJ IDEA
-- 安裝 Rust 插件
-- 啟用 Cargo 項目自動導入
+- Install Rust plugin
+- Enable Cargo project auto-import
 
-## 構建系統
+## Build System
 
-### 構建腳本概覽
+### Build Script Overview
 
-項目提供多種構建方式以適應不同平台和需求：
+The project provides multiple build methods to adapt to different platforms and requirements:
 
 ```bash
-# Bash 腳本 (推薦)
+# Bash script (recommended)
 ./build.sh
 
-# Windows 批處理
+# Windows batch
 build.bat
 
-# PowerShell 腳本
+# PowerShell script
 ./build.ps1
 ```
 
-### 構建過程詳解
+### Build Process Details
 
-#### 1. 環境檢查
+#### 1. Environment Check
 ```bash
-# 檢查 Rust 工具鏈
+# Check Rust toolchain
 cargo --version >/dev/null 2>&1 || {
-    echo "錯誤: 未找到 Rust 工具鏈"
+    echo "Error: Rust toolchain not found"
     exit 1
 }
 ```
 
-#### 2. 目錄準備
+#### 2. Directory Preparation
 ```bash
-# 創建必要目錄
+# Create necessary directories
 mkdir -p bin certs downloads
 ```
 
-#### 3. 編譯階段
+#### 3. Compilation Phase
 ```bash
-# 編譯證書生成工具
+# Compile certificate generation tool
 cargo build --bin cert-gen --release
 
-# 編譯主服務器
+# Compile main server
 cargo build --bin server --release
 ```
 
-#### 4. 部署階段
+#### 4. Deployment Phase
 ```bash
-# 複製二進制文件
+# Copy binary files
 cp target/release/cert-gen bin/
 cp target/release/server bin/
 
-# 生成SSL證書 (如果不存在)
+# Generate SSL certificate (if not exists)
 [ ! -f certs/cert.pem ] && bin/cert-gen
 ```
 
-### 構建選項
+### Build Options
 
-#### Debug 模式
+#### Debug Mode
 ```bash
-# 快速構建，包含調試信息
+# Fast build, includes debug information
 cargo build
 
-# 或使用腳本
+# Or use script
 ./build.ps1 -Debug
 ```
 
-#### Release 模式
+#### Release Mode
 ```bash
-# 優化構建，生產環境使用
+# Optimized build, for production use
 cargo build --release
 
-# 默認模式
+# Default mode
 ./build.sh
 ```
 
-#### 清理構建
+#### Clean Build
 ```bash
-# 清理並重新構建
+# Clean and rebuild
 cargo clean
 ./build.sh --clean
 ```
 
-## 服務管理
+## Service Management
 
-### 統一管理接口
+### Unified Management Interface
 
-使用 `scripts/service.sh` 腳本進行完整的服務生命週期管理：
+Use the `scripts/service.sh` script for complete service lifecycle management:
 
 ```bash
-# 查看幫助和狀態
+# View help and status
 scripts/service.sh
 
-# 啟動服務
+# Start service
 scripts/service.sh start
 
-# 停止服務
+# Stop service
 scripts/service.sh stop
 
-# 重啟服務
+# Restart service
 scripts/service.sh restart
 
-# 查看狀態
+# View status
 scripts/service.sh status
 
-# 查看日志
+# View logs
 scripts/service.sh logs
 
-# 實時日志
+# Real-time logs
 scripts/service.sh logs --follow
 ```
 
-### 服務狀態監控
+### Service Status Monitoring
 
-#### 狀態指示器
-- 🟢 **正常運行**: 進程活躍，端口響應
-- 🟡 **異常運行**: 進程存在但服務異常
-- 🔴 **未運行**: 服務完全停止
+#### Status Indicators
+- 🟢 **Running Normal**: Process active, port responding
+- 🟡 **Running Abnormal**: Process exists but service abnormal
+- 🔴 **Not Running**: Service completely stopped
 
-#### 監控命令
+#### Monitoring Commands
 ```bash
-# 基本狀態檢查
+# Basic status check
 scripts/service.sh status
 
-# 詳細狀態信息
+# Detailed status information
 scripts/service.sh status --detailed
 
-# 持續監控
+# Continuous monitoring
 scripts/service.sh status --watch
 ```
 
-### 日志管理
+### Log Management
 
-#### 日志位置
-- **主日志**: `server.log`
-- **PID 文件**: `server.pid`
+#### Log Location
+- **Main log**: `server.log`
+- **PID file**: `server.pid`
 
-#### 日志查看
+#### Log Viewing
 ```bash
-# 查看最近的日志
+# View recent logs
 tail -f server.log
 
-# 使用服務腳本
+# Use service script
 scripts/service.sh logs --follow
 ```
 
-## 開發工作流程
+## Development Workflow
 
-### 1. 功能開發流程
+### 1. Feature Development Workflow
 
 ```bash
-# 1. 創建功能分支
+# 1. Create feature branch
 git checkout -b feature/new-feature
 
-# 2. 進行開發
-# 編輯代碼...
+# 2. Develop
+# Edit code...
 
-# 3. 測試構建
+# 3. Test build
 ./build.sh
 
-# 4. 啟動測試
+# 4. Start testing
 scripts/service.sh restart
 
-# 5. 功能測試
-# 訪問 http://127.0.0.1:3000
+# 5. Feature testing
+# Visit http://127.0.0.1:3000
 
-# 6. 代碼格式化
+# 6. Code formatting
 cargo fmt
 
-# 7. 代碼檢查
+# 7. Code check
 cargo clippy
 
-# 8. 提交更改
+# 8. Commit changes
 git add .
 git commit -m "feat: add new feature"
 
-# 9. 合併到主分支
+# 9. Merge to main branch
 git checkout main
 git merge feature/new-feature
 ```
 
-### 2. 熱重載開發
+### 2. Hot Reload Development
 
 ```bash
-# 安裝 cargo-watch (僅需一次)
+# Install cargo-watch (only once)
 cargo install cargo-watch
 
-# 自動重新編譯和重啟
+# Auto recompile and restart
 cargo watch -x "build --release" -s "scripts/service.sh restart"
 ```
 
-### 3. 調試流程
+### 3. Debugging Process
 
-#### 開發調試
+#### Development Debugging
 ```bash
-# 前台運行以查看實時輸出
+# Run in foreground to view real-time output
 bin/server
 
-# 調試模式
+# Debug mode
 RUST_LOG=debug bin/server
 ```
 
-#### 生產調試
+#### Production Debugging
 ```bash
-# 查看詳細狀態
+# View detailed status
 scripts/service.sh status --detailed
 
-# 查看日志
+# View logs
 scripts/service.sh logs --follow
 
-# 檢查進程
+# Check process
 ps aux | grep server
 ```
 
-## 測試與調試
+## Testing and Debugging
 
-### 單元測試
+### Unit Testing
 
 ```bash
-# 運行所有測試
+# Run all tests
 cargo test
 
-# 運行特定測試
+# Run specific test
 cargo test test_name
 
-# 詳細測試輸出
+# Detailed test output
 cargo test -- --nocapture
 ```
 
-### 集成測試
+### Integration Testing
 
-#### API 測試
+#### API Testing
 ```bash
-# 測試基本連接
+# Test basic connection
 curl http://127.0.0.1:3000/
 
-# 測試下載功能
+# Test download functionality
 curl -X POST http://127.0.0.1:3000/download \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "url=https://www.youtube.com/watch?v=VIDEO_ID"
 
-# 測試狀態查詢
+# Test status query
 curl http://127.0.0.1:3000/status/TASK_ID
 ```
 
-#### 性能測試
+#### Performance Testing
 ```bash
-# 使用 wrk 進行負載測試
+# Use wrk for load testing
 wrk -t12 -c400 -d30s --timeout 10s http://127.0.0.1:3000/
 
-# 使用 ab 進行基準測試
+# Use ab for benchmark testing
 ab -n 1000 -c 10 http://127.0.0.1:3000/
 ```
 
-### 調試工具
+### Debugging Tools
 
-#### 內存分析
+#### Memory Analysis
 ```bash
-# 使用 valgrind (Linux)
+# Use valgrind (Linux)
 valgrind --tool=memcheck ./bin/server
 
-# 使用 heaptrack (Linux)
+# Use heaptrack (Linux)
 heaptrack ./bin/server
 ```
 
-#### 性能分析
+#### Performance Analysis
 ```bash
-# 使用 perf (Linux)
+# Use perf (Linux)
 perf record ./bin/server
 perf report
 
-# 使用 cargo flamegraph
+# Use cargo flamegraph
 cargo install flamegraph
 cargo flamegraph --bin server
 ```
 
-## 代碼風格與規範
+## Code Style and Standards
 
-### 格式化標準
+### Formatting Standards
 
 ```bash
-# 自動格式化所有代碼
+# Auto format all code
 cargo fmt
 
-# 檢查格式化
+# Check formatting
 cargo fmt -- --check
 ```
 
-### 代碼檢查
+### Code Checking
 
 ```bash
-# 運行 Clippy 檢查
+# Run Clippy check
 cargo clippy
 
-# 嚴格模式
+# Strict mode
 cargo clippy -- -D warnings
 ```
 
-### 命名規範
+### Naming Conventions
 
-#### 文件和目錄
-- 使用 `snake_case` 命名文件
-- 目錄名使用小寫，用連字符分隔
+#### Files and Directories
+- Use `snake_case` for file names
+- Directory names use lowercase, separated with hyphens
 
-#### Rust 代碼
+#### Rust Code
 ```rust
-// 結構體使用 PascalCase
+// Structs use PascalCase
 struct TaskStatus;
 
-// 函數和變量使用 snake_case
+// Functions and variables use snake_case
 fn process_download() {}
 let task_id = generate_id();
 
-// 常量使用 SCREAMING_SNAKE_CASE
+// Constants use SCREAMING_SNAKE_CASE
 const MAX_DOWNLOAD_SIZE: usize = 1024;
 
-// 類型別名使用 PascalCase
+// Type aliases use PascalCase
 type TaskMap = Arc<Mutex<HashMap<String, TaskStatus>>>;
 ```
 
-### 文檔規範
+### Documentation Standards
 
-#### 函數文檔
+#### Function Documentation
 ```rust
-/// 處理 YouTube 視頻下載請求
+/// Process YouTube video download request
 /// 
 /// # Arguments
 /// 
-/// * `url` - YouTube 視頻 URL
-/// * `task_id` - 任務唯一標識符
+/// * `url` - YouTube video URL
+/// * `task_id` - Task unique identifier
 /// 
 /// # Returns
 /// 
-/// 返回 `Result<String, Error>` 包含下載文件路徑或錯誤信息
+/// Returns `Result<String, Error>` containing download file path or error information
 /// 
 /// # Examples
 /// 
@@ -513,28 +513,28 @@ type TaskMap = Arc<Mutex<HashMap<String, TaskStatus>>>;
 /// let result = process_download("https://youtube.com/watch?v=123", "task-123");
 /// ```
 fn process_download(url: &str, task_id: &str) -> Result<String, Error> {
-    // 實現...
+    // Implementation...
 }
 ```
 
-## 部署指南
+## Deployment Guide
 
-### 開發環境部署
+### Development Environment Deployment
 
 ```bash
-# 1. 構建項目
+# 1. Build project
 ./build.sh
 
-# 2. 啟動服務
+# 2. Start service
 scripts/service.sh start
 
-# 3. 驗證部署
+# 3. Verify deployment
 curl http://127.0.0.1:3000/
 ```
 
-### 生產環境部署
+### Production Environment Deployment
 
-#### 系統服務配置
+#### System Service Configuration
 
 ##### systemd (Linux)
 ```ini
@@ -560,7 +560,7 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-# 啟用服務
+# Enable service
 sudo systemctl enable yt-mp3
 sudo systemctl start yt-mp3
 sudo systemctl status yt-mp3
@@ -568,13 +568,13 @@ sudo systemctl status yt-mp3
 
 ##### Windows Service
 ```bash
-# 使用 NSSM 註冊 Windows 服務
+# Use NSSM to register Windows service
 nssm install "YT-MP3 Service" "C:\path\to\yt-mp3-service\bin\yt-mp3.exe"
 nssm set "YT-MP3 Service" AppDirectory "C:\path\to\yt-mp3-service"
 nssm start "YT-MP3 Service"
 ```
 
-#### 反向代理配置
+#### Reverse Proxy Configuration
 
 ##### Nginx
 ```nginx
@@ -582,7 +582,7 @@ server {
     listen 80;
     server_name your-domain.com;
     
-    # 重定向到 HTTPS
+    # Redirect to HTTPS
     return 301 https://$server_name$request_uri;
 }
 
@@ -600,7 +600,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         
-        # 支持大文件上傳
+        # Support large file upload
         client_max_body_size 100M;
         proxy_request_buffering off;
     }
@@ -622,7 +622,7 @@ server {
 </VirtualHost>
 ```
 
-### 容器化部署
+### Containerization Deployment
 
 #### Dockerfile
 ```dockerfile
@@ -670,63 +670,63 @@ services:
       - RUST_LOG=info
 ```
 
-## 問題排除
+## Troubleshooting
 
-### 常見問題
+### Common Issues
 
-#### 1. 構建失敗
+#### 1. Build Failures
 
-**問題**: `cargo build` 失敗
+**Issue**: `cargo build` fails
 ```bash
-# 解決方案
-# 1. 更新 Rust 工具鏈
+# Solution
+# 1. Update Rust toolchain
 rustup update
 
-# 2. 清理並重新構建
+# 2. Clean and rebuild
 cargo clean
 cargo build
 
-# 3. 檢查依賴
+# 3. Check dependencies
 cargo check
 ```
 
-**問題**: 鏈接器錯誤
+**Issue**: Linker errors
 ```bash
-# Linux 解決方案
+# Linux solution
 sudo apt-get install build-essential
 
-# macOS 解決方案
+# macOS solution
 xcode-select --install
 ```
 
-#### 2. 服務啟動問題
+#### 2. Service Startup Issues
 
-**問題**: 端口被佔用
+**Issue**: Port occupied
 ```bash
-# 查找佔用進程
+# Find occupying process
 netstat -tulnp | grep -E ":(3000|3443)"
 lsof -i :3000
 
-# 終止進程
+# Kill process
 scripts/service.sh stop --force
 pkill -f server
 ```
 
-**問題**: 證書問題
+**Issue**: Certificate problems
 ```bash
-# 重新生成證書
+# Regenerate certificate
 rm certs/*
 bin/cert-gen
 
-# 檢查證書有效性
+# Check certificate validity
 openssl x509 -in certs/cert.pem -text -noout
 ```
 
-#### 3. 下載功能問題
+#### 3. Download Function Issues
 
-**問題**: yt-dlp 不存在或過期
+**Issue**: yt-dlp missing or outdated
 ```bash
-# 下載最新版本
+# Download latest version
 curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o bin/yt-dlp
 chmod +x bin/yt-dlp
 
@@ -734,7 +734,7 @@ chmod +x bin/yt-dlp
 curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe -o bin/yt-dlp.exe
 ```
 
-**問題**: FFmpeg 相關錯誤
+**Issue**: FFmpeg related errors
 ```bash
 # Linux
 sudo apt-get install ffmpeg
@@ -742,86 +742,86 @@ sudo apt-get install ffmpeg
 # macOS
 brew install ffmpeg
 
-# Windows - 下載 FFmpeg 並解壓到 bin/ 目錄
+# Windows - Download FFmpeg and extract to bin/ directory
 ```
 
-### 調試技巧
+### Debugging Tips
 
-#### 啟用詳細日志
+#### Enable Verbose Logging
 ```bash
-# 設置日志級別
+# Set log level
 export RUST_LOG=debug
 ./bin/server
 
-# 或者直接運行
+# Or run directly
 RUST_LOG=trace ./bin/server
 ```
 
-#### 網絡調試
+#### Network Debugging
 ```bash
-# 檢查服務可達性
+# Check service accessibility
 curl -v http://127.0.0.1:3000/
 curl -k -v https://127.0.0.1:3443/
 
-# 檢查 SSL 證書
+# Check SSL certificate
 openssl s_client -connect 127.0.0.1:3443 -servername localhost
 ```
 
-#### 系統資源監控
+#### System Resource Monitoring
 ```bash
-# 監控進程
+# Monitor process
 top -p $(pgrep server)
 
-# 監控網絡連接
+# Monitor network connections
 ss -tulnp | grep server
 
-# 檢查磁盤使用
+# Check disk usage
 du -sh downloads/
 ```
 
-## 貢獻指南
+## Contributing Guide
 
-### 代碼貢獻流程
+### Code Contribution Process
 
-1. **Fork 項目**
+1. **Fork Project**
    ```bash
    git clone https://github.com/your-username/yt-mp3-service.git
    cd yt-mp3-service
    ```
 
-2. **創建功能分支**
+2. **Create Feature Branch**
    ```bash
    git checkout -b feature/amazing-feature
    ```
 
-3. **開發和測試**
+3. **Develop and Test**
    ```bash
-   # 開發代碼
-   # 運行測試
+   # Develop code
+   # Run tests
    cargo test
    
-   # 格式化代碼
+   # Format code
    cargo fmt
    
-   # 代碼檢查
+   # Code check
    cargo clippy
    ```
 
-4. **提交更改**
+4. **Commit Changes**
    ```bash
    git add .
    git commit -m "feat: add amazing feature"
    ```
 
-5. **推送和創建 PR**
+5. **Push and Create PR**
    ```bash
    git push origin feature/amazing-feature
-   # 在 GitHub 上創建 Pull Request
+   # Create Pull Request on GitHub
    ```
 
-### 提交信息規範
+### Commit Message Standards
 
-使用 [Conventional Commits](https://conventionalcommits.org/) 格式：
+Use [Conventional Commits](https://conventionalcommits.org/) format:
 
 ```
 type(scope): description
@@ -831,16 +831,16 @@ body
 footer
 ```
 
-#### 類型 (type)
-- `feat`: 新功能
-- `fix`: 錯誤修復
-- `docs`: 文檔更新
-- `style`: 代碼格式化
-- `refactor`: 代碼重構
-- `test`: 測試相關
-- `chore`: 構建過程或輔助工具的變動
+#### Types (type)
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation update
+- `style`: Code formatting
+- `refactor`: Code refactoring
+- `test`: Test related
+- `chore`: Build process or auxiliary tool changes
 
-#### 示例
+#### Example
 ```
 feat(api): add thumbnail download endpoint
 
@@ -850,66 +850,66 @@ The endpoint supports both JPEG and WebP formats.
 Closes #123
 ```
 
-### 代碼審查標準
+### Code Review Standards
 
-#### 必須檢查項目
-- [ ] 代碼符合項目風格規範
-- [ ] 包含適當的錯誤處理
-- [ ] 添加或更新了相關測試
-- [ ] 更新了相關文檔
-- [ ] 通過所有現有測試
-- [ ] 沒有引入安全漏洞
+#### Must Check Items
+- [ ] Code conforms to project style standards
+- [ ] Contains appropriate error handling
+- [ ] Added or updated related tests
+- [ ] Updated related documentation
+- [ ] Passes all existing tests
+- [ ] No security vulnerabilities introduced
 
-#### 推薦檢查項目
-- [ ] 性能影響評估
-- [ ] 內存使用優化
-- [ ] 日志記錄適當
-- [ ] 向後兼容性
+#### Recommended Check Items
+- [ ] Performance impact assessment
+- [ ] Memory usage optimization
+- [ ] Appropriate logging
+- [ ] Backward compatibility
 
-### 問題報告
+### Issue Reporting
 
-提交問題時請包含：
+When submitting issues, please include:
 
-1. **環境信息**
-   - 操作系統和版本
-   - Rust 版本
-   - 項目版本
+1. **Environment Information**
+   - Operating system and version
+   - Rust version
+   - Project version
 
-2. **問題描述**
-   - 期望行為
-   - 實際行為
-   - 重現步驟
+2. **Issue Description**
+   - Expected behavior
+   - Actual behavior
+   - Reproduction steps
 
-3. **相關日志**
+3. **Related Logs**
    ```bash
-   # 收集相關信息
+   # Collect relevant information
    rustc --version
    cargo --version
    scripts/service.sh status --detailed
    tail -50 server.log
    ```
 
-### 文檔貢獻
+### Documentation Contribution
 
-#### 文檔類型
-- **API 文檔**: 代碼中的 Rustdoc 註釋
-- **用戶指南**: README.md 和相關 .md 文件
-- **開發文檔**: 本文件 (DEVELOP.md)
-- **構建文檔**: BUILD.md
-- **服務文檔**: SERVICE.md
+#### Documentation Types
+- **API Documentation**: Rustdoc comments in code
+- **User Guide**: README.md and related .md files
+- **Development Documentation**: This file (DEVELOP.md)
+- **Build Documentation**: BUILD.md
+- **Service Documentation**: SERVICE.md
 
-#### 文檔標準
-- 使用清晰、簡潔的語言
-- 提供實際可運行的示例
-- 保持更新和準確性
-- 支持多語言（中英文）
+#### Documentation Standards
+- Use clear, concise language
+- Provide practical, runnable examples
+- Keep updated and accurate
+- Support multiple languages (Chinese and English)
 
 ---
 
-## 聯繫和支持
+## Contact and Support
 
-- **問題報告**: 使用 GitHub Issues
-- **功能請求**: 使用 GitHub Discussions
-- **安全問題**: 請發送郵件至維護者
+- **Issue Reporting**: Use GitHub Issues
+- **Feature Requests**: Use GitHub Discussions
+- **Security Issues**: Please email maintainers
 
-感謝您對 YT-MP3 Service 的貢獻！🎵
+Thank you for your contribution to YT-MP3 Service! 🎵
