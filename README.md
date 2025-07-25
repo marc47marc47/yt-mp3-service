@@ -1,389 +1,253 @@
 # YT-MP3 Service
 
-🎵 A fast and reliable YouTube to MP3 conversion service built with Rust and Axum.
+🎵 高效能 YouTube 轉 MP3 轉換服務，使用 Rust 和 Axum 構建
 
-## Features
+## 主要功能
 
-- 🚀 **Fast Conversion**: High-performance YouTube to MP3 conversion using yt-dlp and FFmpeg
-- 🖼️ **Thumbnail Support**: Automatically downloads and displays video thumbnails
-- 🔒 **HTTPS Support**: Built-in TLS support with automatic certificate generation
-- 🌐 **Web Interface**: Clean and intuitive web UI for easy usage
-- 📦 **Self-contained**: Complete release packages with all dependencies included
-- 🛠️ **Service Management**: Comprehensive scripts for starting, stopping, and monitoring the service
+### 🚀 核心功能
+- **快速轉換**: 使用 yt-dlp 和 FFmpeg 進行高性能 YouTube 轉 MP3 轉換
+- **縮圖支援**: 自動下載並顯示影片縮圖
+- **多格式支援**: 支援 MP3、M4A 等多種音頻格式
+- **批量下載**: 支援播放清單批量轉換
 
-## Quick Start
+### 🌐 Web 介面
+- **直觀操作**: 簡潔易用的網頁介面
+- **即時進度**: 即時顯示轉換進度和狀態
+- **下載管理**: 完成後直接下載音頻檔案
 
-### Using Release Package (Recommended)
+### 🔒 安全與效能
+- **HTTPS 支援**: 內建 TLS 支援，自動生成 SSL 證書
+- **本地運行**: 完全在本地運行，保護隱私
+- **自包含**: 包含所有依賴，無需額外安裝
 
-1. **Download the latest release package**
-2. **Extract the package**:
-   ```bash
-   # Linux/macOS
-   tar -xzf yt-mp3-service_YYYYMMDD_HHMMSS.tar.gz
-   cd yt-mp3-service_YYYYMMDD_HHMMSS
+## 安裝方法
+
+### 方法 1: 從原始碼構建 (推薦)
+
+#### 環境需求
+- **Windows 10/11** (64位元)
+- **Rust 工具鏈** (最新穩定版)
+- **網路連線** (用於下載依賴工具)
+
+#### 安裝步驟
+
+1. **安裝 Rust**
+   ```cmd
+   # 下載並執行 Rust 安裝程式
+   # 訪問 https://rustup.rs/ 下載 rustup-init.exe
+   rustup-init.exe
    
-   # Windows
-   # Extract using Windows Explorer or your preferred tool
+   # 重新開啟 Command Prompt 驗證安裝
+   cargo --version
+   rustc --version
    ```
 
-3. **Run the installer**:
-   ```bash
-   # Linux/macOS
-   ./install.sh
+2. **下載專案**
+   ```cmd
+   git clone <repository-url>
+   cd yt-mp3-service
+   ```
+
+3. **構建專案**
+   ```cmd
+   # 使用構建腳本 (推薦)
+   build.bat
    
-   # Windows
+   # 或者手動構建
+   cargo build --release
+   ```
+
+4. **驗證安裝**
+   ```cmd
+   # 檢查生成的檔案
+   dir bin\
+   # 應該看到: server.exe, cert-gen.exe
+   ```
+
+### 方法 2: 預編譯版本
+
+1. **下載發布包**
+   - 從 Releases 頁面下載最新的 Windows 版本
+   - 檔案名稱: `yt-mp3-service-windows-x64.zip`
+
+2. **解壓縮**
+   ```cmd
+   # 解壓到任意目錄
+   # 例如: C:\yt-mp3-service\
+   ```
+
+3. **執行初始化**
+   ```cmd
+   cd C:\yt-mp3-service
    install.bat
    ```
 
-4. **Start the service**:
-   ```bash
-   ./service start
-   ```
+## 啟動服務
 
-5. **Access the web interface**:
-   - HTTP: http://127.0.0.1:3000
-   - HTTPS: https://127.0.0.1:3443
+### 快速啟動
 
-### Building from Source
+```cmd
+# 方法 1: 使用服務管理腳本 (推薦)
+start.bat
 
-#### Prerequisites
-
-- [Rust](https://rustup.rs/) (latest stable version)
-- Internet connection (to download yt-dlp automatically)
-- [FFmpeg](https://ffmpeg.org/) (optional, for advanced audio processing)
-
-**Note**: yt-dlp will be automatically downloaded during the first build.
-
-#### Build Instructions
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd yt-mp3-service
-
-# Build the project
-./build.sh
-
-# Or for a complete release package
-./build.sh --release
-
+# 方法 2: 直接執行
+bin\server.exe
 ```
 
-## Usage
+### 完整服務管理
 
-### Web Interface
+```cmd
+# 啟動服務
+start.bat
 
-1. Open your browser and navigate to:
-   - HTTP: http://127.0.0.1:3000
-   - HTTPS: https://127.0.0.1:3443
+# 檢查服務狀態
+status.bat
 
-2. Paste a YouTube URL in the input field
-3. Click "開始轉碼" (Start Conversion)
-4. Wait for the conversion to complete
-5. Download your MP3 file
-
-### Service Management
-
-```bash
-# Start the service
-./service start
-
-# Stop the service
-./service stop
-
-# Check service status
-./service status
-
-# Restart the service
-./service restart
-
-# View logs
-./service logs
+# 停止服務
+stop.bat
 ```
 
-### Command Line Options
+### 服務驗證
 
-```bash
-# Start with custom ports (requires rebuilding)
-./bin/server --help
+啟動後在瀏覽器中訪問：
+- **HTTP**: http://127.0.0.1:3000
+- **HTTPS**: https://127.0.0.1:3443
 
-# Generate new SSL certificates
-./bin/cert-gen
+## 停止服務
+
+### 正常停止
+
+```cmd
+# 使用停止腳本 (推薦)
+stop.bat
+
+# 查看停止狀態
+status.bat
 ```
 
-## Configuration
+### 強制停止
 
-### Default Ports
-- **HTTP**: 3000
-- **HTTPS**: 3443
+```cmd
+# 如果正常停止失敗，使用強制停止
+taskkill /F /IM server.exe
 
-### SSL Certificates
-The service automatically generates self-signed certificates for HTTPS. For production use, replace the certificates in the `certs/` directory:
-
-```bash
-# Generate new certificates
-./bin/cert-gen
-
-# Or use your own certificates
-cp your-cert.pem certs/cert.pem
-cp your-key.pem certs/key.pem
+# 清理殘留進程
+tasklist | findstr server
 ```
 
-### File Locations
-- **Downloads**: `downloads/` directory
-- **Certificates**: `certs/` directory
-- **Logs**: Console output (can be redirected)
+## 使用方法
 
-## Development
+### Web 介面操作
 
-### Project Structure
+1. **開啟瀏覽器** 訪問 http://127.0.0.1:3000
 
-```
-yt-mp3-service/
-├── src/
-│   ├── main.rs              # Main server application
-│   └── bin/
-│       └── cert-gen.rs      # SSL certificate generator
-├── bin/                     # Compiled binaries and tools
-├── certs/                   # SSL certificates
-├── downloads/               # Downloaded files
-├── scripts/                 # Service management scripts
-├── build.sh                 # Build script (Bash)
-├── build.ps1                # Build script (PowerShell)
-└── Cargo.toml              # Rust project configuration
-```
+2. **貼上 YouTube 網址**
+   - 支援單一影片: `https://www.youtube.com/watch?v=VIDEO_ID`
+   - 支援播放清單: `https://www.youtube.com/playlist?list=PLAYLIST_ID`
 
-### Building
+3. **開始轉換**
+   - 點擊「開始轉碼」按鈕
+   - 等待轉換完成
 
-```bash
-# Development build
-cargo build
+4. **下載檔案**
+   - 轉換完成後自動顯示下載連結
+   - 點擊下載 MP3 檔案
 
-# Release build
-cargo build --release
+### 服務管理
 
-# Build specific binary
-cargo build --bin server --release
-cargo build --bin cert-gen --release
+```cmd
+# 檢視服務狀態
+status.bat
 
-# Using build scripts
-./build.sh --clean --release
-./build.ps1 -Clean -Release
+# 檢視運行日誌
+type server.log
+
+# 重啟服務
+stop.bat && start.bat
 ```
 
-### Dependencies
+### 進階配置
 
-#### Rust Crates
-- `axum` - Web framework
-- `tokio` - Async runtime
-- `axum-server` - HTTPS server support
-- `rcgen` - Certificate generation
-- `serde` - Serialization
-- `tower` - Service abstractions
-
-#### External Tools
-- `yt-dlp` - YouTube downloading
-- `ffmpeg` - Audio processing (optional)
-
-## API
-
-The service provides a simple REST API:
-
-### Endpoints
-
-- `GET /` - Web interface
-- `POST /download` - Start download (form data: `url`)
-- `GET /status/{task_id}` - Check task status
-- `GET /download/{task_id}` - Download completed file
-- `GET /thumbnail/{task_id}` - Get video thumbnail
-
-### Example API Usage
-
-```bash
-# Start download
-curl -X POST http://127.0.0.1:3000/download \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "url=https://www.youtube.com/watch?v=VIDEO_ID"
-
-# Check status
-curl http://127.0.0.1:3000/status/TASK_ID
-
-# Download file
-curl -O http://127.0.0.1:3000/download/TASK_ID
+#### 修改服務埠
+```cmd
+# 編輯配置 (如果需要)
+# 默認埠: HTTP=3000, HTTPS=3443
 ```
 
-## Production Deployment
+#### SSL 證書管理
+```cmd
+# 重新生成 SSL 證書
+bin\cert-gen.exe
 
-### System Service Setup
-
-#### Linux (systemd)
-
-```bash
-# Create service file
-sudo tee /etc/systemd/system/yt-mp3.service << EOF
-[Unit]
-Description=YT-MP3 Service
-After=network.target
-
-[Service]
-Type=simple
-User=yt-mp3
-WorkingDirectory=/opt/yt-mp3-service
-ExecStart=/opt/yt-mp3-service/bin/server
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Enable and start
-sudo systemctl enable yt-mp3
-sudo systemctl start yt-mp3
+# 檢查證書
+dir certs\
 ```
 
-#### Reverse Proxy (nginx)
+## 故障排除
 
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+### 常見問題
+
+#### 服務無法啟動
+```cmd
+# 檢查埠佔用
+netstat -an | findstr ":3000"
+netstat -an | findstr ":3443"
+
+# 檢查防火牆設定
+# Windows Defender 防火牆 > 允許應用程式通過防火牆
 ```
 
-### Security Considerations
+#### 下載失敗
+```cmd
+# 檢查 yt-dlp 是否存在
+dir bin\yt-dlp.exe
 
-1. **Run as non-root user**
-2. **Configure firewall rules**
-3. **Use valid SSL certificates in production**
-4. **Monitor system resources**
-5. **Regular security updates**
-
-## System Requirements
-
-### Minimum Requirements
-- **CPU**: 1 core
-- **Memory**: 256MB RAM
-- **Storage**: 100MB available space
-- **Network**: Internet connection for YouTube downloads
-
-### Supported Operating Systems
-- Windows 10/11
-- Ubuntu 18.04+
-- CentOS 7+
-- macOS 10.14+
-- Other Linux distributions with Rust support
-
-## Troubleshooting
-
-### Common Issues
-
-#### Build Failures
-```bash
-# Check Rust installation
-cargo --version
-rustc --version
-
-# Clean and rebuild
-cargo clean
-./build.sh --clean
+# 更新 yt-dlp (如果需要)
+# 從 https://github.com/yt-dlp/yt-dlp/releases 下載最新版本
 ```
 
-#### Service Won't Start
-```bash
-# Check port availability
-netstat -tulnp | grep -E ":(3000|3443)"
-
-# Check permissions
-chmod +x bin/*
-ls -la bin/
-
-# Check certificates
-ls -la certs/
-./bin/cert-gen
+#### 音頻處理問題
+```cmd
+# 檢查 FFmpeg (可選)
+# 下載 FFmpeg 並解壓到 bin\ 目錄
 ```
 
-#### Download Failures
-```bash
-# Check yt-dlp
-./bin/yt-dlp --version
+### 日誌檢查
 
-# Update yt-dlp
-# Download latest version to bin/ directory
+```cmd
+# 檢視運行日誌
+type server.log
 
-# Check internet connection
-ping youtube.com
+# 檢視最新日誌
+powershell "Get-Content server.log -Tail 50"
 ```
 
-### Logs and Debugging
+## 技術規格
 
-```bash
-# Start with verbose output
-RUST_LOG=debug ./bin/server
+### 系統需求
+- **作業系統**: Windows 10/11 (64位元)
+- **記憶體**: 最少 256MB RAM
+- **儲存空間**: 100MB 可用空間
+- **網路**: 需要網際網路連線
 
-# Check service status
-./service status --detailed
+### 支援格式
+- **輸入**: YouTube 影片網址、播放清單
+- **輸出**: MP3 (128kbps-320kbps)、M4A
 
-# Monitor logs
-./service logs --follow
-```
+### 技術架構
+- **後端**: Rust + Axum Web 框架
+- **下載引擎**: yt-dlp
+- **音頻處理**: FFmpeg (可選)
+- **SSL/TLS**: 自簽名證書 + Rustls
 
-## Contributing
+## 開發資訊
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+如需開發相關資訊，請參閱 [DEVELOP.md](DEVELOP.md) 開發指南。
 
-### Development Setup
+## 授權
 
-```bash
-# Clone and setup
-git clone <repository-url>
-cd yt-mp3-service
-
-# Install dependencies
-cargo check
-
-# Run tests
-cargo test
-
-# Format code
-cargo fmt
-
-# Lint code
-cargo clippy
-```
-
-## License
-
-This project is open source. Please check the license file for details.
-
-## Acknowledgments
-
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp) - YouTube downloading
-- [FFmpeg](https://ffmpeg.org/) - Audio processing
-- [Axum](https://github.com/tokio-rs/axum) - Web framework
-- [Tokio](https://tokio.rs/) - Async runtime
-
-## Support
-
-For issues and questions:
-
-1. Check the documentation in `docs/` directory
-2. Review the troubleshooting section above
-3. Check existing issues in the repository
-4. Create a new issue with detailed information
+本專案為開源軟體，具體授權條款請查看 LICENSE 文件。
 
 ---
 
-Made with ❤️ and Rust 🦀
+**注意**: 請遵守 YouTube 服務條款，僅用於個人合法用途。
