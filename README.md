@@ -2,7 +2,7 @@
 
 🎵 高效能 YouTube 轉 MP3 轉換服務，使用 Rust 和 Axum 構建
 
-![YT-MP3 Service Interface](yt-mp3.service.png)
+![YT-MP3 Service Interface](yt-mp3-service.png)
 
 ## 主要功能
 
