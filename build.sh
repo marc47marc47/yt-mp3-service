@@ -67,7 +67,8 @@ create_release_package() {
     fi
     
     # 複製FFmpeg工具（如果存在）
-    for tool in ffmpeg ffplay ffprobe; do
+    #for tool in ffmpeg ffplay ffprobe; do
+    for tool in ffmpeg ; do
         if [ -f "bin/${tool}.exe" ]; then
             cp "bin/${tool}.exe" "${release_dir}/bin/"
         elif [ -f "bin/${tool}" ]; then

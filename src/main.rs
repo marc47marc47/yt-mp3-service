@@ -408,9 +408,8 @@ async fn perform_conversion(url: &str) -> Result<(String, Option<String>), Strin
         .unwrap()
         .as_secs();
     
-    // 使用yt-dlp的輸出模板來直接使用視頻標題作為文件名
-    // 這樣可以避免編碼問題，讓yt-dlp自己處理文件名
-    let output_template = format!("downloads/%(title).100s.%(ext)s");
+    // 使用時間戳創建唯一的輸出模板，避免文件名衝突
+    let output_template = format!("downloads/%(title).100s_{}.%(ext)s", timestamp);
     
     // 執行 yt-dlp 命令下載音頻和縮圖
     let output = Command::new("bin/yt-dlp.exe")
@@ -455,8 +454,10 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
         return None;
     }
     
-    let mut audio_file = None;
-    let mut thumbnail_file = None;
+    let mut latest_audio_file = None;
+    let mut latest_audio_time = 0u64;
+    let mut latest_thumbnail_file = None;
+    let mut latest_thumbnail_time = 0u64;
     
     if let Ok(entries) = fs::read_dir(downloads_dir) {
         for entry in entries {
@@ -465,19 +466,25 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
                 if let Ok(metadata) = entry.metadata() {
                     if let Ok(modified) = metadata.modified() {
                         if let Ok(duration) = modified.duration_since(UNIX_EPOCH) {
-                            // 只檢查在轉換開始後創建的文件
-                            if duration.as_secs() >= since_timestamp {
+                            let file_timestamp = duration.as_secs();
+                            // 檢查在轉換開始後創建或修改的文件
+                            if file_timestamp >= since_timestamp {
                                 if let Some(filename) = path.file_name() {
                                     let filename_str = filename.to_string_lossy().to_string();
                                     
-                                    if filename_str.ends_with(".mp3") && audio_file.is_none() {
-                                        audio_file = Some(filename_str.clone());
-                                    } else if (filename_str.ends_with(".jpg") || 
+                                    // 查找最新的音頻文件
+                                    if filename_str.ends_with(".mp3") && file_timestamp > latest_audio_time {
+                                        latest_audio_file = Some(filename_str.clone());
+                                        latest_audio_time = file_timestamp;
+                                    } 
+                                    // 查找最新的縮圖文件
+                                    else if (filename_str.ends_with(".jpg") || 
                                               filename_str.ends_with(".jpeg") || 
                                               filename_str.ends_with(".png") || 
                                               filename_str.ends_with(".webp")) && 
-                                              thumbnail_file.is_none() {
-                                        thumbnail_file = Some(filename_str.clone());
+                                              file_timestamp > latest_thumbnail_time {
+                                        latest_thumbnail_file = Some(filename_str.clone());
+                                        latest_thumbnail_time = file_timestamp;
                                     }
                                 }
                             }
@@ -488,8 +495,30 @@ fn find_latest_downloaded_files(since_timestamp: u64) -> Option<(String, Option<
         }
     }
     
-    if let Some(audio) = audio_file {
-        Some((audio, thumbnail_file))
+    // 如果找不到新的音頻文件，嘗試查找downloads目錄中的任何mp3文件
+    // 這可以處理文件被覆蓋但時間戳沒有更新的情況
+    if latest_audio_file.is_none() {
+        if let Ok(entries) = fs::read_dir(downloads_dir) {
+            for entry in entries {
+                if let Ok(entry) = entry {
+                    let path = entry.path();
+                    if let Some(filename) = path.file_name() {
+                        let filename_str = filename.to_string_lossy().to_string();
+                        if filename_str.ends_with(".mp3") {
+                            // 驗證文件確實存在且可讀
+                            if path.exists() && fs::metadata(&path).is_ok() {
+                                latest_audio_file = Some(filename_str);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if let Some(audio) = latest_audio_file {
+        Some((audio, latest_thumbnail_file))
     } else {
         None
     }
